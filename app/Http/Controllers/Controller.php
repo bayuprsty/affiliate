@@ -28,7 +28,8 @@ class Controller extends BaseController
             $ipaddress = getenv('REMOTE_ADDR');
         else
             $ipaddress = 'UNKNOWN';
-    
+        
+        dd($ipaddress);
         return $ipaddress;
     }
     
