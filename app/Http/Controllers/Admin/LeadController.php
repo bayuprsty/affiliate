@@ -6,18 +6,53 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use PDF;
+use Validator;
 use Carbon\Carbon;
 
 use App\Lead;
 use App\ServiceCommission;
 use App\User;
 use App\Transaction;
+use App\Vendor;
 
 class LeadController extends Controller
 {
     public function index(Request $request) {
         $lead = Lead::paginate(10);
-        return view('admin.lead.index', compact('lead'));
+        $vendor = Vendor::all();
+
+        return view('admin.lead.index', compact('lead', 'vendor'));
+    }
+
+    public function store(Request $request) {
+        if ($request->ajax()) {
+            $validator = Validator::make($request->all(), [
+                'user_id' => 'required',
+                'vendor_id' => 'required'
+            ], [
+                'user_id.required' => 'Please Select User Affiliate',
+                'vendor_id.required' => 'Please Select Vendor'
+            ]);
+
+            if ($validator->fails()) {
+                foreach ($validator->errors()->messages() as $value) {
+                    $error[] = $value[0];
+                }
+
+                $stringError = implode("\n", $error);
+
+                return $this->sendResponse($stringError, '', 221);
+            }
+
+            $data = $request->all();
+            $data['status'] = 1;
+
+            $saveSuccess = Lead::create($data);
+
+            if ($saveSuccess) {
+                return $this->sendResponse('Lead Created Successfully');
+            }
+        }
     }
 
     public function prosesLead(Request $request) {

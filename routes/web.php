@@ -64,6 +64,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'can:isAdmin'], function () {
 
     Route::group(['prefix' => 'lead'], function() {
         Route::get('/list', 'Admin\LeadController@index')->name('lead.index');
+        Route::post('/store', 'admin\LeadController@store')->name('lead.store');
         Route::get('/proses', 'Admin\LeadController@prosesLead')->name('lead.detail');
         Route::post('/save', 'Admin\LeadController@saveProses')->name('lead.proses');
         Route::post('/cancel/{id}', 'Admin\LeadController@cancel')->name('lead.cancel');
@@ -95,6 +96,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'can:isAdmin'], function () {
     });
 
     Route::get('/setCommission', 'AjaxController@setCommission')->name('ajax.setCommission');
+    Route::get('/getAffiliate', 'AjaxController@loadUserAffiliate')->name('ajax.getUserAffiliate');
 
     Route::get('/topAffiliate', 'DatatableController@topAffiliateAdmin')->name('datatableTopAffiliate');
     Route::get('/vendorAdmin', 'DatatableController@vendorAdmin')->name('datatableVendorAdmin');

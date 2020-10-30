@@ -29,7 +29,6 @@ class Controller extends BaseController
         else
             $ipaddress = 'UNKNOWN';
         
-        dd($ipaddress);
         return $ipaddress;
     }
     

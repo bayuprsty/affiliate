@@ -40,7 +40,7 @@
                             </div>
                             <div class="col text-right">
                                 <button class="btn btn-success btn-sm" id="exportData">Export</button>
-                                <button class="btn btn-primary btn-sm" id="add-transaction"><i class="fa fa-plus"></i> Transaction</button>
+                                <button class="btn btn-warning btn-sm" id="add-transaction"><i class="fa fa-plus"></i> Transaction</button>
                             </div>
                         </div>
                         <div class="col-md-12">

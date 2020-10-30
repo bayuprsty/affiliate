@@ -40,6 +40,7 @@
                             </div>
                             <div class="col text-right">
                                 <button class="btn btn-success btn-sm" id="exportData">Export</button>
+                                <button class="btn btn-warning btn-sm" id="add-lead"><i class="fa fa-plus"></i> Lead</button>
                             </div>
                         </div>
                         <hr>
@@ -66,6 +67,7 @@
         </div>
     </div>
     @extends('admin.lead._modal_proses_lead')
+    @extends('admin.lead._modal_create')
 </main>
 @endsection
 
@@ -128,6 +130,14 @@
             window.open("downloadPdf/" + status + "/" + dateStart + "/" + dateEnd, "_blank");
         });
 
+        $('body').on('click', '#add-lead', function() {
+            $('#modal-create-lead').modal('show');
+            
+            $('#username_aff').empty();
+            $('#username_aff').select2('data', '');
+            $('#vendor_aff').trigger("reset");
+        })
+
         $('body').on('click', '#leadProcess', function() {
             var id = $(this).attr('data-id');
             var url = "{{ route('lead.detail') }}";
@@ -150,6 +160,47 @@
             });
         });
 
+        $('body').on('click', '#button-submit', function() {
+            event.preventDefault();
+
+            $.ajax({
+                url: "{{ route('lead.proses') }}",
+                method: 'POST',
+                datatype: "JSON",
+                data: $('#leadProsesForm').serialize(),
+                success: function(res) {
+                    if (res.code == 200) {
+                        $('#modal-lead-process').modal('hide');
+                        $.notify(res.message, "success");
+                        leadList.ajax.reload();
+                    } else {
+                        $.notify(res.message, "error");
+                    }
+                }
+            })
+        });
+
+        $('body').on('click', '#button-store', function() {
+            event.preventDefault();
+
+            $.ajax({
+                url: "{{ route('lead.store') }}",
+                method: 'POST',
+                datatype: "JSON",
+                data: $('#leadCreateForm').serialize(),
+                success: function(res) {
+                    if (res.code == 200) {
+                        $('#modal-create-lead').modal('hide');
+                        $.notify(res.message, "success");
+                        leadList.ajax.reload();
+                    } else {
+                        $.notify(res.message, "error");
+                    }
+                }
+            })
+        });
+
+        //////////////////////////////////////////////// AJAX GET VALUE ///////////////////////////////////////////
         $('#productService').on('change', function() {
             var service_id = $(this).val();
             var amount = $('#amount').val();
@@ -188,25 +239,24 @@
             }
         });
 
-        $('body').on('click', '#button-submit', function() {
-            event.preventDefault();
-
-            $.ajax({
-                url: "{{ route('lead.proses') }}",
-                method: 'POST',
+        $('#username_aff').select2({
+            placeholder: '-- Select User Affiliate --',
+            ajax: {
+                url: "{{ route('ajax.getUserAffiliate') }}",
                 datatype: "JSON",
-                data: $('#leadProsesForm').serialize(),
-                success: function(res) {
-                    if (res.code == 200) {
-                        $('#modal-lead-process').modal('hide');
-                        $.notify(res.message, "success");
-                        leadList.ajax.reload();
-                    } else {
-                        $.notify(res.message, "error");
+                delay: 250,
+                processResults: function(data) {
+                    return {
+                        results: $.map(data, function(item) {
+                            return {
+                                id: item.id,
+                                text: item.id + ' - ' + item.nama
+                            }
+                        })
                     }
                 }
-            })
-        })
+            }
+        });
     });
 </script>
 @endsection

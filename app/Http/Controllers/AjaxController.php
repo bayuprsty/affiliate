@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 
 use App\ServiceCommission;
@@ -11,6 +12,7 @@ use App\Notification;
 use App\WithdrawalStatus;
 
 use App\Click;
+use App\User;
 
 class AjaxController extends Controller
 {
@@ -26,6 +28,20 @@ class AjaxController extends Controller
 
             return response()->json(['commission' => $commission]);
         }
+    }
+
+    public function loadUserAffiliate(Request $request) {
+        if ($request->has('q')) {
+            $name = $request->q;
+            $user = User::select('id', DB::raw('CONCAT(nama_depan, " ", nama_belakang) as nama'))
+                        ->where(function($query) use ($name) {
+                            $query->where('id', 'LIKE', '%'.$name.'%')->orWhere(DB::raw('CONCAT(nama_depan, " ", nama_belakang)'), 'LIKE', '%'.$name.'%');
+                        })->where('role', 'affiliator')->take(5)->get();
+        } else {
+            $user = User::select('id', DB::raw('CONCAT(nama_depan, " ", nama_belakang) as nama'))->where('role', 'affiliator')->take(5)->get();
+        }
+
+        return response()->json($user);
     }
 
     public function getNotification() {
@@ -133,40 +149,60 @@ class AjaxController extends Controller
 
     public function setClick(Request $request) {
         if ($request->ajax()) {
-            $value = explode('.', $request->value);
+            $value      = explode('.', $request->value);
 
-            $ipaddress = $this->getIpAddress();
-            dd($ipaddress);
+            $vendor_id  = $value[0];
+            $user_id    = $value[1];
+            $media_id   = $value[2];
 
             // [0] vendor, [1] id user, [2] media
-            $click = Click::where(['vendor_id' => $value[0], 'user_id' => $value[1], 'media_id' => $value[2]])->get();
+            $click = Click::where(['vendor_id' => $vendor_id, 'user_id' => $user_id, 'media_id' => $media_id])->get();
 
             if (count($click) > 0) {
-                $updateClick = $click[0]->click + 1;
-                $click[0]->click = $updateClick;
+                $dataClick = $click[0];
 
-                $update = $click[0]->save();
+                $updateClick      = $dataClick->click + 1;
+                $dataClick->click = $updateClick;
+
+                $update = $dataClick->save();
 
                 if ($update) {
                     $ipaddress = $this->getIpAddress();
-                    // $data = [
-                    //     'user_id' => 
-                    // ]
-                }
+                    $dataLead = [
+                        'user_id'       => $user_id,
+                        'vendor_id'     => $vendor_id,
+                        'ip_address'    => $ipaddress,
+                    ];
 
-                return response()->json(['url' => $click[0]->vendor->link]);
+                    $success = Lead::create($dataLead);
+
+                    if ($success) {
+                        return response()->json(['url' => $dataClick->vendor->link]);
+                    }
+                }
             } else {
-                $data = [
-                    'user_id' => $value[1],
-                    'vendor_id' => $value[0],
-                    'media_id' => $value[2],
+                $dataClick = [
+                    'user_id' => $user_id,
+                    'vendor_id' => $vendor_id,
+                    'media_id' => $media_id,
                     'click' => 1
                 ];
 
-                $createSuccess = Click::create($data);
+                $clickSuccess = Click::create($dataClick);
 
-                if ($createSuccess) {
-                    return response()->json(['url' => $createSuccess->vendor->link]);
+                if ($clickSuccess) {
+                    $ipaddress = $this->getIpAddress();
+                    $dataLead = [
+                        'user_id'       => $user_id,
+                        'vendor_id'     => $vendor_id,
+                        'ip_address'    => $ipaddress,
+                    ];
+
+                    $leadSuccess = Lead::create($dataLead);
+
+                    if ($leadSuccess) {
+                        return response()->json(['url' => $clickSuccess->vendor->link]);
+                    }
                 }
             }
         }
