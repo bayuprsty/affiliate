@@ -38,7 +38,7 @@
                     datatype: "JSON",
                     data: {value: "{{ $sharedValue }}"},
                     success: function (res) {
-                        // window.location.assign(res.url);
+                        window.location.assign(res.url);
                     }
                 });
             })
