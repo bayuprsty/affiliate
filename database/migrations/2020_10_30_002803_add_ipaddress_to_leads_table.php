@@ -15,11 +15,6 @@ class AddIpaddressToLeadsTable extends Migration
     {
         Schema::table('leads', function (Blueprint $table) {
             $table->string('ip_address')->nullable()->after('vendor_id');
-            $table->string('customer_name')->nullable()->change();
-            $table->string('email')->nullable()->change();
-            $table->string('no_telepon')->nullable()->change();
-            $table->date('date')->nullable()->change();
-            $table->integer('status')->nullable()->change();
         });
     }
 
