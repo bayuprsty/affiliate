@@ -13,6 +13,7 @@ use App\WithdrawalStatus;
 
 use App\Click;
 use App\User;
+use App\Lead;
 
 class AjaxController extends Controller
 {
@@ -155,7 +156,6 @@ class AjaxController extends Controller
             $user_id    = $value[1];
             $media_id   = $value[2];
 
-            // [0] vendor, [1] id user, [2] media
             $click = Click::where(['vendor_id' => $vendor_id, 'user_id' => $user_id, 'media_id' => $media_id])->get();
 
             if (count($click) > 0) {
@@ -168,16 +168,24 @@ class AjaxController extends Controller
 
                 if ($update) {
                     $ipaddress = $this->getIpAddress();
+
+                    $leadByIp = Lead::where('ip_address', $ipaddress)->get();
+
+                    if (count($leadByIp) > 0) {
+                        $dataOldLead = $leadByIp[0];
+                        return response()->json(['url' => $dataOldLead->vendor->link.'/?id='.$dataOldLead->id]);
+                    }
+
                     $dataLead = [
                         'user_id'       => $user_id,
                         'vendor_id'     => $vendor_id,
-                        'ip_address'    => $ipaddress,
+                        'ip_address'    => $ipaddress
                     ];
 
                     $success = Lead::create($dataLead);
 
                     if ($success) {
-                        return response()->json(['url' => $dataClick->vendor->link]);
+                        return response()->json(['url' => $dataClick->vendor->link.'/?id='.$success->id]);
                     }
                 }
             } else {

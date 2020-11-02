@@ -19,7 +19,7 @@ class AddIpaddressToLeadsTable extends Migration
             $table->string('email')->nullable()->change();
             $table->string('no_telepon')->nullable()->change();
             $table->date('date')->nullable()->change();
-            $table->integer('status')->nullable()->change();
+            $table->integer('status')->default(1)->change();
         });
     }
 
