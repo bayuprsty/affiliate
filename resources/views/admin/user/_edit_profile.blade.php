@@ -155,7 +155,13 @@
                 processData: false,
                 success: function(res) {
                     if (res.code == 200) {
-                        window.location.href = "{{ route('user.detail') }}";
+                        if(res.data == "{{ Auth::id() }}")
+                            window.location.href = "{{ route('user.detail') }}";
+                        else {
+                            var url = "{{ route('user.detailUser', ':id') }}";
+                            url = url.replace(':id', res.data);
+                            window.location.href = url;
+                        }
                         $.notify(res.message, "success");
                     }
                 }

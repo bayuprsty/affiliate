@@ -52,8 +52,6 @@ class UserController extends Controller
                 'avatar' => 'sometimes|image|mimes:jpg,jpeg,png,svg|max:100'
             ]);
 
-            dd($request);
-
             $user = User::findOrfail($request->idUser);
 
             if ($request->hasFile('avatar')) {
@@ -91,7 +89,7 @@ class UserController extends Controller
             $success = $user->update($data);
 
             if ($success) {
-                return $this->sendResponse('Profile Updated Successfully');
+                return $this->sendResponse('Profile Updated Successfully', $user->id);
             }
         }
     }

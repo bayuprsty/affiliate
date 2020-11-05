@@ -102,7 +102,11 @@
                                 </div>
                                 <div class="form-group row">
                                     <div class="col-sm-12 text-center">
-                                        <a href="{{ route('user.editProfile') }}" class="btn btn-warning btn-xs">Edit</a>
+                                        @if($user->id == Auth::id())
+                                            <a href="{{ route('user.editProfile') }}" class="btn btn-warning btn-xs">Edit</a>
+                                        @else
+                                            <a href="{{ route('user.editUser', $user->id) }}" class="btn btn-warning btn-xs">Edit</a>
+                                        @endif
                                     </div>
                                 </div>
                             </div>
