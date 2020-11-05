@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
+
 use App\User;
 use App\Withdrawal;
 use App\WithdrawalPayout;
@@ -36,8 +38,8 @@ class WithdrawController extends Controller
                 'payout' => 'required|integer'
             ]);
     
-            if (WithdrawalPayout::create($request->except('_token'))) {
-                Withdrawal::where('id', $request->withdrawal_id)->update(['withdrawal_status_id' => 2]);
+            if (WithdrawalPayout::create($request->all())) {
+                Withdrawal::where('id', $request->withdrawal_id)->update(['withdrawal_status_id' => 2, 'date_approve' => Carbon::NOW()]);
                 
                 return $this->sendResponse('Withdrawal Request Approved');
             }

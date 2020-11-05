@@ -31,6 +31,21 @@ class AjaxController extends Controller
         }
     }
 
+    public function getProductService(Request $request) {
+        if ($request->ajax()) {
+            $service = '<option value="">-- Select Product/Service --</option>';
+            
+            $dataService = ServiceCommission::where('vendor_id', $request->id_vendor)->get();
+            foreach ($dataService as $key => $value) {
+                $service .= "<option value='".$value->id."'>".$value->title."</option>";
+            }
+
+            return response()->json([
+                'service' => $service
+            ]);
+        }
+    }
+
     public function loadUserAffiliate(Request $request) {
         if ($request->has('q')) {
             $name = $request->q;
@@ -80,7 +95,7 @@ class AjaxController extends Controller
                                                 </div>
                                             </div>
                                             <div>
-                                                <div class="small text-gray-500">'.$this->convertDateView($value->withdraw->date).'</div>
+                                                <div class="small text-gray-500">'.$this->convertDateView($value->withdraw->date_approve).'</div>
                                                 <span class="font-weight-bold">Withdraw Request Transaction ID '.$value->withdraw->id.' Approved</span>
                                             </div>
                                         </a>';
@@ -158,61 +173,72 @@ class AjaxController extends Controller
 
             $click = Click::where(['vendor_id' => $vendor_id, 'user_id' => $user_id, 'media_id' => $media_id])->get();
 
-            if (count($click) > 0) {
-                $dataClick = $click[0];
+            DB::beginTransaction();
 
-                $updateClick      = $dataClick->click + 1;
-                $dataClick->click = $updateClick;
+            try {
+                if (count($click) > 0) {
 
-                $update = $dataClick->save();
-
-                if ($update) {
-                    $ipaddress = $this->getIpAddress();
-
-                    $leadByIp = Lead::where('ip_address', $ipaddress)->get();
-
-                    if (count($leadByIp) > 0) {
-                        $dataOldLead = $leadByIp[0];
-                        return response()->json(['url' => $dataOldLead->vendor->link.'/?id='.$dataOldLead->id]);
+                    $dataClick = $click[0];
+    
+                    $updateClick      = $dataClick->click + 1;
+                    $dataClick->click = $updateClick;
+    
+                    $update = $dataClick->save();
+    
+                    if ($update) {
+                        $ipaddress = $this->getIpAddress();
+    
+                        $leadByIp = Lead::where('ip_address', $ipaddress)->get();
+    
+                        if (count($leadByIp) > 0) {
+                            DB::commit();
+                            $dataOldLead = $leadByIp[0];
+                            return response()->json(['url' => $dataOldLead->vendor->link.'/?id='.$dataOldLead->id]);
+                        }
+    
+                        $dataLead = [
+                            'user_id'       => $user_id,
+                            'vendor_id'     => $vendor_id,
+                            'ip_address'    => $ipaddress
+                        ];
+    
+                        $success = Lead::create($dataLead);
+    
+                        if ($success) {
+                            DB::commit();
+                            return response()->json(['url' => $dataClick->vendor->link.'/?id='.$success->id]);
+                        }
                     }
-
-                    $dataLead = [
-                        'user_id'       => $user_id,
-                        'vendor_id'     => $vendor_id,
-                        'ip_address'    => $ipaddress
+                } else {
+                    $dataClick = [
+                        'user_id' => $user_id,
+                        'vendor_id' => $vendor_id,
+                        'media_id' => $media_id,
+                        'click' => 1
                     ];
-
-                    $success = Lead::create($dataLead);
-
-                    if ($success) {
-                        return response()->json(['url' => $dataClick->vendor->link.'/?id='.$success->id]);
+    
+                    $clickSuccess = Click::create($dataClick);
+    
+                    if ($clickSuccess) {
+                        $ipaddress = $this->getIpAddress();
+                        $dataLead = [
+                            'user_id'       => $user_id,
+                            'vendor_id'     => $vendor_id,
+                            'ip_address'    => $ipaddress,
+                        ];
+    
+                        $leadSuccess = Lead::create($dataLead);
+    
+                        if ($leadSuccess) {
+                            DB::commit();
+                            return response()->json(['url' => $clickSuccess->vendor->link]);
+                        }
                     }
                 }
-            } else {
-                $dataClick = [
-                    'user_id' => $user_id,
-                    'vendor_id' => $vendor_id,
-                    'media_id' => $media_id,
-                    'click' => 1
-                ];
-
-                $clickSuccess = Click::create($dataClick);
-
-                if ($clickSuccess) {
-                    $ipaddress = $this->getIpAddress();
-                    $dataLead = [
-                        'user_id'       => $user_id,
-                        'vendor_id'     => $vendor_id,
-                        'ip_address'    => $ipaddress,
-                    ];
-
-                    $leadSuccess = Lead::create($dataLead);
-
-                    if ($leadSuccess) {
-                        return response()->json(['url' => $clickSuccess->vendor->link]);
-                    }
-                }
+            } catch (Exception $e) {
+                dd($e);
             }
+            
         }
     }
 }

@@ -67,7 +67,8 @@
             </div>
         </div>
     </div>
-    <!-- @extends('admin.lead._modal_proses_lead') -->
+    @extends('admin.transaction._modal_create_transaction')
+    @extends('admin.transaction._modal_cancel')
 </main>
 @endsection
 
@@ -133,63 +134,99 @@
             window.open("downloadPdf/" + status + "/" + dateStart + "/" + dateEnd, "_blank");
         });
 
-        $('#leadProses').click(function() {
-            var id = $('#idLead').val();
-            var url = "{{ route('lead.detail') }}";
+        $('body').on('click', '#add-transaction', function() {
+            $('#transactionCreateForm').trigger("reset");
+            $('#modal-create-transaction').modal('show');
+        });
+
+        $('#username_aff').select2({
+            placeholder: '-- Select User Affiliate --',
+            ajax: {
+                url: "{{ route('ajax.getUserAffiliate') }}",
+                datatype: "JSON",
+                delay: 250,
+                processResults: function(data) {
+                    return {
+                        results: $.map(data, function(item) {
+                            return {
+                                id: item.id,
+                                text: item.id + ' - ' + item.nama
+                            }
+                        })
+                    }
+                }
+            }
+        });
+
+        $('#vendor_id').on('change', function() {
+            var vendor_id = $(this).val();
+            
+            $.ajax({
+                url: "{{ route('ajax.getProductService') }}",
+                datatype: "JSON",
+                data: {id_vendor: vendor_id},
+                success: function(res) {
+                    $('#productService').html(res.service).trigger("change");
+                }
+            })
+        });
+
+        $('input:radio[name="addCommission"]').on('change', function() {
+            var show = $(this).val();
+            
+            if (show == 1) {
+                $('#commissionShow').css("visibility", "visible");
+            } else {
+                $('#commissionShow').css("visibility", "hidden");
+            }
+        });
+
+        $('body').on('click', '#button-store', function(e) {
+            e.preventDefault();
 
             $.ajax({
-                url: url,
-                type: 'GET',
-                dataType: 'JSON',
-                data: {id: id},
-                success: function(response) {
-                    $('#modal-lead-process').modal('show');
-                    $('#leadId').val(response.lead.id);
-                    $('#usernameAffiliate').val(response.user.username);
-                    $('#customerName').val(response.lead.customer_name);
-                    $('#productService').append(response.service);
-                    $('#commission').val('Rp. ' + 0);
+                url: "{{ route('transaction.store') }}",
+                method: "POST",
+                datatype: "JSON",
+                data: $('#transactionCreateForm').serialize(),
+                success: function(res) {
+                    if (res.code == 200) {
+                        $('#modal-create-transaction').modal('hide');
+                        $.notify(res.message, "success");
+                        transactionList.ajax.reload();
+                    } else {
+                        $.notify(res.message, "error");
+                    }
+                }
+            })
+        });
+
+        $('body').on('click', '#cancelTransaction', function() {
+            var id = $(this).attr('data-id');
+
+            $('#modal-cancel-transaction').modal('show');
+            $('#idTransaction').val(id);
+        });
+
+        $('body').on('click', '#button-cancel', function(e) {
+            e.preventDefault();
+
+            $.ajax({
+                url: "{{ route('transaction.cancel') }}",
+                method: "POST",
+                datatype: "JSON",
+                data: $('#transactionCancelForm').serialize(),
+                success: function(res) {
+                    if (res.code == 200) {
+                        $('#modal-cancel-transaction').modal('hide');
+                        $.notify(res.message, "success");
+                        transactionList.ajax.reload();
+                    } else {
+                        $.notify(res.message, "error");
+                    }
                 }
             });
-        });
-
-        $('#productService').on('change', function() {
-            var service_id = $('#productService').val();
-            var amount = $('#amount').val();
-            
-            if (amount > 0 && service_id !== '') {
-                $.ajax({
-                    url: "{{ route('ajax.setCommission') }}",
-                    type: 'GET',
-                    datatype: 'JSON',
-                    data: {service_id: service_id, amount: amount},
-                    success: function(response) {
-                        $('#commission').val(response.commission);
-                    }
-                });
-            } else {
-                $('#commission').val('Rp. ' + 0);
-            }
-        });
-
-        $('#amount').keyup(function() {
-            var service_id = $('#productService').val();
-            var amount = $('#amount').val();
-            
-            if (service_id !== '' && amount > 0) {
-                $.ajax({
-                    url: "{{ route('ajax.setCommission') }}",
-                    type: 'GET',
-                    dataType: 'JSON',
-                    data: {service_id: service_id, amount: amount},
-                    success: function(response) {
-                        $('#commission').val('Rp. ' + response.commission);
-                    }
-                });
-            } else {
-                $('#commission').val('Rp. ' + 0);
-            }
-        });
+        })
     });
 </script>
 @endsection

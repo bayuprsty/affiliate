@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddCancelToTransactionsTable extends Migration
+class AddDateapproveToWithdrawalsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,8 @@ class AddCancelToTransactionsTable extends Migration
      */
     public function up()
     {
-        Schema::table('transactions', function (Blueprint $table) {
-            $table->boolean('cancel')->default(false)->after('service_commission_id');
-            $table->string('cancel_reason')->nullable()->after('cancel');
+        Schema::table('withdrawals', function (Blueprint $table) {
+            $table->date('date_approve')->nullable()->after('withdrawal_status_id');
         });
     }
 
@@ -26,7 +25,7 @@ class AddCancelToTransactionsTable extends Migration
      */
     public function down()
     {
-        Schema::table('transactions', function (Blueprint $table) {
+        Schema::table('withdrawals', function (Blueprint $table) {
             //
         });
     }

@@ -12,11 +12,6 @@ class User extends Authenticatable
 {
     use Notifiable;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
     protected $fillable = [
         'username',
         'password',
@@ -57,5 +52,18 @@ class User extends Authenticatable
 
     public function gender() {
         return $this->belongsTo(Gender::class);
+    }
+
+    public static function checkUserRelation($user_id) {
+        $click = Click::where('user_id', $user_id)->get()->count();
+        $lead = Lead::where('user_id', $user_id)->get()->count();
+        $withdrawal = Withdrawal::where('user_id', $user_id)->get()->count();
+        $notification = Notification::where('user_id', $user_id)->get()->count();
+
+        if ($click > 0 || $lead > 0 || $withdrawal > 0 || $notification > 0) {
+            return true;
+        }
+
+        return false;
     }
 }

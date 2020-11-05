@@ -49,6 +49,12 @@
         </a>
     </li>
     <hr class="sidebar-divider my-0">
+    <li class="nav-item {{ setActive(['user.index', 'user.detailUser', 'user.editUser']) }}">
+        <a href="{{ route('user.index') }}" class="nav-link">
+            <i class="fas fa-fw fa-sitemap"></i>
+            <span>Management User</span>
+        </a>
+    </li>
     <li class="nav-item {{ setActive(['komisi.index', 'payout.index']) }}">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#setting" aria-expanded="true" aria-controls="setting">
           <i class="fas fa-fw fa-cog"></i>

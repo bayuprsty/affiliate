@@ -251,8 +251,8 @@ class DatatableController extends Controller
     }
 
     public function transactionAdmin(Request $request) {
-        if (request()->ajax()) {
-            $transaction = Transaction::join('leads', 'leads.id', '=', 'transactions.lead_id');
+        if ($request->ajax()) {
+            $transaction = Transaction::all();
             if ($request->status !== 'all') {
                 if ($request->status == Lead::ON_PROCESS) {
                     $transaction->where('leads.status', Lead::ON_PROCESS);
@@ -267,7 +267,7 @@ class DatatableController extends Controller
                 $transaction->whereBetween('transactions.transaction_date', [$request->dateStart, $request->dateEnd]);
             }
 
-            return DataTables::of($transaction->latest('transactions.created_at')->get())
+            return DataTables::of($transaction)
                         ->addIndexColumn()
                         ->addColumn('username_aff', function($row) {
                             return $row->lead->user->username;
@@ -294,23 +294,29 @@ class DatatableController extends Controller
                             return $this->currencyView($row->commission);
                         })
                         ->editColumn('status', function($row){
-                            if ($row->lead->status == Lead::ON_PROCESS) {
-                                $statusLead = '<span class="badge badge-primary">ON PROCESS</span>';
-                            } else if ($row->lead->status == Lead::SUCCESS) {
-                                $statusLead = '<div class="badge badge-success">SUCCESS</div>';
-                            } else {
+                            if ($row->cancel == 1) {
                                 $statusLead = '<span class="badge badge-danger">CANCELED</span>';
+                            } else {
+                                if ($row->lead->status == Lead::ON_PROCESS) {
+                                    $statusLead = '<span class="badge badge-primary">ON PROCESS</span>';
+                                } else if ($row->lead->status == Lead::SUCCESS) {
+                                    $statusLead = '<div class="badge badge-success">SUCCESS</div>';
+                                } else {
+                                    $statusLead = '<span class="badge badge-danger">CANCELED</span>';
+                                }
                             }
 
                             return $statusLead;
                         })
                         ->addColumn('action', function($row) {
-                            $btn = '<div class="form-inline row">
+                            $btn = '';
+                            if ($row->cancel == 0) {
+                                $btn = '<div class="form-inline row">
                                         <center>
-                                            <button id="cancelButton" class="btn btn-danger btn-sm btn-circle" title="Cancel" data-id="'.$row->id.'"><i class="fa fa-times"></i></button>
+                                            <button id="cancelTransaction" class="btn btn-danger btn-sm btn-circle" title="Cancel" data-id="'.$row->id.'"><i class="fa fa-times"></i></button>
                                         </center>
                                     </div>';
-                                
+                            }   
 
                             return $btn;
                         })
@@ -438,6 +444,41 @@ class DatatableController extends Controller
                         })
                         ->rawColumns(['status','action'])
                         ->make(true);
+        }
+    }
+
+    public function userAdmin(Request $request) {
+        if ($request->ajax()) {
+            $user = User::all();
+
+            return DataTables::of($user)
+                            ->addIndexColumn()
+                            ->addColumn('nama_lengkap', function($row) {
+                                return $row->nama_depan.' '.$row->nama_belakang;
+                            })
+                            ->editColumn('role', function($row) {
+                                if ($row->role == 'admin') {
+                                    return 'Administrator';
+                                } else {
+                                    return 'Affiliate';
+                                }
+                            })
+                            ->editColumn('join_date', function($row) {
+                                return $this->convertDateView($row->join_date);
+                            })
+                            ->addColumn('action', function($row) {
+                                $btn = '<div>
+                                            <center>
+                                                <a href="'.route("user.detailUser", $row->id).'" class="btn btn-info btn-sm btn-circle" title="Detail User"><i class="fa fa-eye"></i></a>
+                                                <a href="'.route("user.editUser", $row->id).'" class="btn btn-warning btn-sm btn-circle" title="Edit User"><i class="fa fa-pencil-alt"></i></a>
+                                                <button id="deleteUser" data-id="'.$row->id.'" class="btn btn-danger btn-sm btn-circle" title="Delete User"><i class="fas fa-times"></i></button>
+                                            </center>
+                                        </div>';
+                                
+                                return $btn;
+                            })
+                            ->rawColumns(['action'])
+                            ->make(true);
         }
     }
 

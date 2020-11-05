@@ -88,7 +88,9 @@
             })
         });
 
-        $('body').on('click', '#button-submit', function() {
+        $('body').on('click', '#button-submit', function(e) {
+            e.preventDefault();
+
             $.ajax({
                 url: "{{ route('withdraw.payout') }}",
                 method: 'POST',

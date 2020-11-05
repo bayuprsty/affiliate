@@ -12,14 +12,32 @@ use App\Gender;
 
 class UserController extends Controller
 {
+    public function index() {
+        return view('admin.user.index');
+    }
+
     public function detailProfile() {
         $user = User::findOrfail(Auth::id());
 
         return view('admin.user.detail', compact('user'));
     }
 
+    public function detailUser($id) {
+        $user = User::findOrfail($id);
+
+        return view('admin.user.detail', compact('user'));
+    }
+
     public function editProfile() {
         $user = User::findOrfail(Auth::id());
+        $user->join_date = $this->convertDateView($user->join_date);
+        $gender = Gender::all();
+
+        return view('admin.user._edit_profile', compact('user', 'gender'));
+    }
+
+    public function editUser($id) {
+        $user = User::findOrfail($id);
         $user->join_date = $this->convertDateView($user->join_date);
         $gender = Gender::all();
 
@@ -72,6 +90,20 @@ class UserController extends Controller
 
             if ($success) {
                 return $this->sendResponse('Profile Updated Successfully');
+            }
+        }
+    }
+
+    public function destroy(Request $request) {
+        if ($request->ajax()) {
+            $user = User::findOrfail($request->id);
+
+            $result = User::checkUserRelation($user->id);
+
+            if ($result) {
+                $user->delete();
+
+                return $this->sendResponse('User Affiliate Deleted');
             }
         }
     }
