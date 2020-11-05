@@ -67,7 +67,7 @@ Route::group(['middleware' => 'auth'], function() {
 
         Route::group(['prefix' => 'lead'], function() {
             Route::get('/list', 'Admin\LeadController@index')->name('lead.index');
-            Route::post('/store', 'admin\LeadController@store')->name('lead.store');
+            Route::post('/store', 'Admin\LeadController@store')->name('lead.store');
             Route::get('/proses', 'Admin\LeadController@prosesLead')->name('lead.detail');
             Route::post('/save', 'Admin\LeadController@saveProses')->name('lead.proses');
             Route::post('/cancel/{id}', 'Admin\LeadController@cancel')->name('lead.cancel');
