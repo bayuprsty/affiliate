@@ -49,7 +49,7 @@
                                 <div class="form-group row">
                                     <label class="col-sm-4 col-form-label">Jenis Kelamin</label>
                                     <div class="col-sm-8">
-                                        {{ $user->gender->name }}
+                                        {{ $user->gender_id ? $user->gender->name : '' }}
                                     </div>
                                 </div>
                             </div>

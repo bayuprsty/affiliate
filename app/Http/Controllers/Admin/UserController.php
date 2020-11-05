@@ -52,7 +52,9 @@ class UserController extends Controller
                 'avatar' => 'sometimes|image|mimes:jpg,jpeg,png,svg|max:100'
             ]);
 
-            $user = Auth::user();
+            dd($request);
+
+            $user = User::findOrfail($request->idUser);
 
             if ($request->hasFile('avatar')) {
                 $avatar = $request->file('avatar');
@@ -64,7 +66,7 @@ class UserController extends Controller
 
                 Image::make($avatar)->resize(300, 300)->save( public_path('uploads/avatar/'.$filename) );
             } else {
-                $filename = Auth::user()->avatar;
+                $filename = $user->avatar;
             }
 
             $data = [
