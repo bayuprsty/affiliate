@@ -36,7 +36,7 @@
                             </div>
                             <div class="col">
                                 <button class="btn btn-primary btn-sm" id="searchData">Search</button>
-                                <button class="btn btn-default btn-sm" id="resetData">Reset</button>
+                                <button class="btn btn-light btn-sm" id="resetData">Reset</button>
                             </div>
                             <div class="col text-right">
                                 <button class="btn btn-success btn-sm" id="exportData">Export</button>

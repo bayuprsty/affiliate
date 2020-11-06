@@ -9,6 +9,7 @@ use Carbon\Carbon;
 use Validator;
 
 use App\Lead;
+use App\Transaction;
 
 class ApiController extends Controller
 {
@@ -49,7 +50,7 @@ class ApiController extends Controller
             $updated = $dataLead->update($data);
 
             if ($updated) {
-                $this->sendResponse('Lead Created', $updated[0]);
+                return $this->sendResponse('Lead Created', $updated);
             }
         }
     }
@@ -78,7 +79,8 @@ class ApiController extends Controller
 
         if (count($lead) > 0) {
             $data = [
-                'lead_id' => $lead->id,
+                'lead_id' => $lead[0]->id,
+                'service_commission_id' => $request->service_commission_id,
                 'transaction_date' => $request->transaction_date,
                 'amount' => $request->amount,
                 'commission' => !empty($request->commission) ? $request->commission : NULL,
@@ -87,7 +89,7 @@ class ApiController extends Controller
             $transactionCreated = Transaction::create($data);
 
             if ($transactionCreated) {
-                return $this->sendResponse('Transaction Created', $transactionCreated[0]);
+                return $this->sendResponse('Transaction Created', $transactionCreated);
             }
         }
     }

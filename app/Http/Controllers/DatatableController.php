@@ -42,6 +42,12 @@ class DatatableController extends Controller
                 $user->where('leads.date', '>=', $filter_periode);
             }
 
+            $commission = Transaction::select(
+                'leads.user_id as user_id',
+                DB::raw('SUM(transactions.commission) as total_commission')
+            )->leftJoin('leads', 'leads.id', '=', 'transactions.lead_id')
+            ->groupBy('leads.user_id')->get()->keyBy('user_id')->toArray();
+
             $withdrawals = Withdrawal::select(
                             'withdrawals.user_id as user_id',
                             DB::raw('SUM(withdrawals.total) as total')
@@ -56,9 +62,10 @@ class DatatableController extends Controller
 
             return DataTables::of($user->get()->where('signup', '>', 0))
                         ->addIndexColumn()
-                        ->addColumn('balance', function($row) use ($withdrawals){
+                        ->addColumn('balance', function($row) use ($withdrawals, $commission){
                             $withdrawRequest = isset($withdrawals[$row->user_id]) ? $withdrawals[$row->user_id]['total'] : 0;
-                            $balance = $row->commission - $withdrawRequest;
+                            $allCommission = isset($commission[$row->user_id]) ? $commission[$row->user_id]['total_commission'] : 0;
+                            $balance = $allCommission - $withdrawRequest;
                             return $this->currencyView($balance);
                         })
                         ->editColumn('commission', function($row){
