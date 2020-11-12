@@ -9,7 +9,7 @@ use Mail;
 
 use App\User;
 use App\Transaction;
-use App\lead;
+use App\Lead;
 
 class sendEmailTransaction extends Command
 {
