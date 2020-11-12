@@ -15,8 +15,9 @@
     <!-- Custom styles for this template-->
     <link href="{{ asset('sbadmin2-theme/css/sb-admin-2.min.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('sbadmin2-theme/css/bootstrap-social.css') }}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/css/bootstrap-datepicker3.css"/>
     <link href="{{ asset('sbadmin2-theme/css/select2.min.css') }}" rel="stylesheet">
+
+    @yield('css')
 </head>
 <body id="page-top">
     <div id="wrapper">
@@ -45,6 +46,9 @@
     <!-- Bootstrap core JavaScript-->
     <script src="{{ asset('sbadmin2-theme/vendor/jquery/jquery.min.js')}}"></script>
     <script src="{{ asset('sbadmin2-theme/vendor/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
+    <script src="https://unpkg.com/@popperjs/core@2"></script>
+    <!-- <script src="{{ asset('assets/js/popovers.js') }}"></script>
+    <script src="{{ asset('assets/js/tooltips.js') }}"></script> -->
 
     <!-- Core plugin JavaScript-->
     <script src="{{ asset('sbadmin2-theme/vendor/jquery-easing/jquery.easing.min.js')}}"></script>
@@ -52,7 +56,6 @@
     <!-- Custom scripts for all pages-->
     <script src="{{ asset('sbadmin2-theme/js/sb-admin-2.min.js')}}"></script>
     <script src="{{ asset('sbadmin2-theme/vendor/datatables/jquery.dataTables.min.js')}}"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>
     <script src="{{ asset('sbadmin2-theme/vendor/datatables/dataTables.bootstrap4.min.js')}}"></script>
     <script src="{{ asset('sbadmin2-theme/js/notify.min.js')}}"></script>
     <script src="{{ asset('sbadmin2-theme/js/select2.min.js')}}"></script>

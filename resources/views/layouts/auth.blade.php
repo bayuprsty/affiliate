@@ -60,6 +60,15 @@
             }
         })
     </script>
+    <script>
+        // $(document).ready(function() {
+        //     var urlSplit = window.location.href.split('?');
+        //     var data = urlSplit[1].split('=');
+        //     var dataID = data[1].split('.');
+
+        //     document.cookie = 'lead_' + dataID[0] + '=' + dataID[1];
+        // });
+    </script>
     @yield('js')
 </body>
 </html>

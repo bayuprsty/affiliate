@@ -38,9 +38,17 @@ class DatatableController extends Controller
                     ->groupBy('leads.user_id')->orderBy('signup', 'DESC');
                     
             if ($request->filter_periode) {
-                $filter_periode = now()->subDays($request->filter_periode)->toDateString();
-                $user->where('leads.date', '>=', $filter_periode);
+                if ($request->filter_periode == 'custom') {
+                    if (!empty($request->dateStart && !empty($request->dateEnd))) {
+                        $user->whereBetween('leads.date', [$request->dateStart, $request->dateEnd]);
+                    }
+                } else {
+                    $filter_periode = now()->subDays($request->filter_periode)->toDateString();
+                    $user->where('leads.date', '>=', $filter_periode);
+                }
             }
+
+            $user = $user->get()->where('signup', '>', 0);
 
             $commission = Transaction::select(
                 'leads.user_id as user_id',
@@ -60,23 +68,54 @@ class DatatableController extends Controller
                         DB::raw('SUM(click) as click')
                     )->groupBy('clicks.user_id')->get()->keyBy('user_id')->toArray();
 
-            return DataTables::of($user->get()->where('signup', '>', 0))
+            foreach ($user as $key => $value) {
+                $withdrawRequest = isset($withdrawals[$value->user_id]) ? $withdrawals[$value->user_id]['total'] : 0;
+                $allCommission = isset($commission[$value->user_id]) ? $commission[$value->user_id]['total_commission'] : 0;
+                $balance = $allCommission - $withdrawRequest;
+
+                $conversion = isset($click[$value->user_id]) ? round($value->signup / $click[$value->user_id]['click'] * 100, 2) : 0;
+
+                if (!isset($rows)) {
+                    $rows[$key] = [
+                        'user_id' => $value->user_id,
+                        'username' => $value->username,
+                        'commission' => $this->currencyView($value->commission),
+                        'signup' => $value->signup,
+                        'balance' => $this->currencyView($balance),
+                        'click' => isset($click[$value->user_id]) ? $click[$value->user_id]['click'] : 0,
+                        'conversion' => $conversion
+                    ];
+                } else {
+                    $temp = [
+                        'user_id' => $value->user_id,
+                        'username' => $value->username,
+                        'commission' => $this->currencyView($value->commission),
+                        'signup' => $value->signup,
+                        'balance' => $this->currencyView($balance),
+                        'click' => isset($click[$value->user_id]) ? $click[$value->user_id]['click'] : 0,
+                        'conversion' => $conversion
+                    ];
+                }
+
+                if(isset($temp)) {
+                    if ($rows[$key-1]['signup'] == $temp['signup']) {
+                        if ($rows[$key-1]['conversion'] > $temp['conversion']) {
+                            $rows[$key] = $temp;
+                        } else {
+                            $temp2 = $rows[$key-1];
+                            $rows[$key-1] = $temp;
+                            $rows[$key] = $temp2;
+                        }
+                    } else {
+                        $rows[$key] = $temp;
+                    }
+                }
+            }
+
+            return DataTables::of($rows)
                         ->addIndexColumn()
-                        ->addColumn('balance', function($row) use ($withdrawals, $commission){
-                            $withdrawRequest = isset($withdrawals[$row->user_id]) ? $withdrawals[$row->user_id]['total'] : 0;
-                            $allCommission = isset($commission[$row->user_id]) ? $commission[$row->user_id]['total_commission'] : 0;
-                            $balance = $allCommission - $withdrawRequest;
-                            return $this->currencyView($balance);
-                        })
-                        ->editColumn('commission', function($row){
-                            return $this->currencyView($row->commission);
-                        })
-                        ->addColumn('click', function($row) use ($click) {
-                            return isset($click[$row->user_id]) ? $click[$row->user_id]['click'] : 0;
-                        })
-                        ->addColumn('conversion', function($row) use ($click){
-                            $conversion = isset($click[$row->user_id]) ? round($row->signup / $click[$row->user_id]['click'] * 100, 2) : 0;
-                            return $this->percentageView($conversion);
+                        ->editColumn('conversion', function($row){
+                            return $this->percentageView($row['conversion']);
                         })
                         ->make(true);
         }
@@ -110,6 +149,9 @@ class DatatableController extends Controller
 
             return DataTables::of($user)
                         ->addIndexColumn()
+                        ->editColumn('username', function($row) {
+                            return '<a href="'.route('user.detailUser', $row->user_id).'">'.$row->username.'</a>';
+                        })
                         ->addColumn('balance', function($row) use ($withdrawals){
                             if (isset($withdrawals[$row->user_id])) {
                                 $balance = $row->commission - $withdrawals[$row->user_id]['total'];
@@ -137,7 +179,7 @@ class DatatableController extends Controller
 
                             return $btn;
                         })
-                        ->rawColumns(['action'])
+                        ->rawColumns(['username', 'action'])
                         ->make(true);
         }
     }
@@ -193,6 +235,9 @@ class DatatableController extends Controller
 
             return Datatables::of($result)
                         ->addIndexColumn()
+                        ->editColumn('username', function ($row) {
+                            return '<a href="'.route('user.detailUser', $row['user_id']).'">'.$row['username'].'</a>';
+                        })
                         ->editColumn('commission', function($row) {
                             return $this->currencyView($row['commission']);
                         })
@@ -208,7 +253,7 @@ class DatatableController extends Controller
 
                             return $btn;
                         })
-                        ->rawColumns(['action'])
+                        ->rawColumns(['username', 'action'])
                         ->make(true);
         }
     }
@@ -259,7 +304,7 @@ class DatatableController extends Controller
 
     public function transactionAdmin(Request $request) {
         if ($request->ajax()) {
-            $transaction = Transaction::all();
+            $transaction = Transaction::orderBy('id', 'DESC');
             if ($request->status !== 'all') {
                 if ($request->status == Lead::ON_PROCESS) {
                     $transaction->where('leads.status', Lead::ON_PROCESS);
@@ -274,19 +319,18 @@ class DatatableController extends Controller
                 $transaction->whereBetween('transactions.transaction_date', [$request->dateStart, $request->dateEnd]);
             }
 
-            return DataTables::of($transaction)
+            return DataTables::of($transaction->get())
                         ->addIndexColumn()
                         ->addColumn('username_aff', function($row) {
-                            return $row->lead->user->username;
+                            $id = $row->lead->user->id;
+
+                            return '<a href="'.route('user.detailUser', $id).'">'.$row->lead->user->username.'</a>';
                         })
                         ->addColumn('customer_name', function($row) {
                             return $row->lead->customer_name;
                         })
                         ->addColumn('vendor_name', function($row) {
                             return $row->lead->vendor->name;
-                        })
-                        ->addColumn('signup_date', function($row) {
-                            return $this->convertDateView($row->lead->date);
                         })
                         ->addColumn('product_service', function($row) {
                             return $row->service_commission->title;
@@ -300,8 +344,16 @@ class DatatableController extends Controller
                         ->editColumn('commission', function($row) {
                             return $this->currencyView($row->commission);
                         })
+                        ->editColumn('created_by', function($row) {
+                            if ($row->created_by_system == 1) {
+                                return 'System';
+                            } else {
+                                return 'Manual';
+                            }
+                        })
                         ->editColumn('status', function($row){
                             if ($row->cancel == 1) {
+                                // $statusLead = '<span id="button" aria-describedby="tooltip">CANCELED</span><div id="tooltip" role="tooltip">TES 123<div id="arrow" data-popper-arrow></div></div>';
                                 $statusLead = '<span class="badge badge-danger">CANCELED</span>';
                             } else {
                                 if ($row->lead->status == Lead::ON_PROCESS) {
@@ -327,7 +379,7 @@ class DatatableController extends Controller
 
                             return $btn;
                         })
-                        ->rawColumns(['status', 'action'])
+                        ->rawColumns(['username_aff', 'status', 'action'])
                         ->make(true);
         }
     }

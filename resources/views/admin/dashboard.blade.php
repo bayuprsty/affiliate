@@ -147,15 +147,37 @@
                                         <span class="text-xl font-weight-bold text-white text-uppercase mb-1">Top 10 Affiliate</span>
                                     </div>
                                     <div class="card-body">
-                                        <div class="row col-md-3">
-                                            <select name="filter_periode" id="filter_periode" class="form-control">
-                                                <option value=""> All Periode </option>
-                                                <option value="7"> 7 Hari Terakhir </option>
-                                                <option value="14"> 14 Hari Terakhir </option>
-                                                <option value="21"> 21 Hari Terakhir </option>
-                                                <option value="31"> 31 Hari Terakhir </option>
-                                                <option value="365"> 365 Hari Terakhir </option>
-                                            </select>
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <select name="filter_periode" id="filter_periode" class="form-control form-control-sm">
+                                                    <option value=""> All Periode </option>
+                                                    <option value="7"> 7 Hari Terakhir </option>
+                                                    <option value="14"> 14 Hari Terakhir </option>
+                                                    <option value="21"> 21 Hari Terakhir </option>
+                                                    <option value="31"> 31 Hari Terakhir </option>
+                                                    <option value="365"> 365 Hari Terakhir </option>
+                                                    <option value="custom">Custom Range Date</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-9" style="visibility: hidden" id="date_range">
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <div class="input-group">
+                                                            <input type="date" class="form-control form-control-sm" id="dateStart" placeholder="dd / mm / yyyy">
+                                                        </div>
+                                                    </div>
+                                                    to
+                                                    <div class="col">
+                                                        <div class="input-group">
+                                                            <input type="date" class="form-control form-control-sm" id="dateEnd" placeholder="dd / mm / yyyy">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col">
+                                                        <button class="btn btn-primary btn-sm" id="filter">Filter</button>
+                                                        <button class="btn btn-light btn-sm" id="resetData">Reset</button>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                         <table class="table table-responsive-sm table-hover table-outline mb-0" id="top_affiliate_list">
                                             <thead class="light">
@@ -197,6 +219,8 @@
                 url: "{{ route('datatableTopAffiliate') }}",
                 data: function(d) {
                     d.filter_periode = $('#filter_periode').val();
+                    d.dateStart = $('#dateStart').val();
+                    d.dateEnd = $('#dateEnd').val();
                 },
             },
             columns: [
@@ -214,8 +238,17 @@
         });
 
         $('#filter_periode').on('change', function() {
-            topAffiliateList.ajax.reload();
+            if ($(this).val() !== 'custom') {
+                $('#date_range').css('visibility', 'hidden');
+                topAffiliateList.ajax.reload(); 
+            } else {
+                $('#date_range').css('visibility', 'visible');
+            }
         })
+
+        $('body').on('click', '#filter', function() {
+            topAffiliateList.ajax.reload();
+        });
     });
 </script>
 @endsection

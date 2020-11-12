@@ -65,7 +65,7 @@
                         <label class="col-sm-3 col-form-label">Commission ?</label>
                         <div class="col-sm-9">
                             <div class="form-check form-check-inline mr-1">
-                                <input type="radio" name="addCommission" class="form-check-input" value="1">
+                                <input type="radio" name="addCommission" class="form-check-input" value="1" checked>
                                 <label class="form-check-label">Ya</label>
                                 &emsp;
                                 <input type="radio" name="addCommission" class="form-check-input" value="0">
@@ -73,10 +73,10 @@
                             </div>
                         </div>
                     </div>
-                    <div class="form-group row" id="commissionShow" style="visibility: hidden;">
+                    <div class="form-group row" id="commissionShow">
                         <label class="col-sm-3 col-form-label">Commission</label>
                         <div class="col-sm-9">
-                            <input type="text" name="commission" class="form-control">
+                            <input type="text" name="commission" class="form-control" id="commission">
                             <i style="font-size: 12px; color: red">* Jika di kosongi maka akan diisi otomatis oleh system sesuai dengan komisi dari product service</i>
                         </div>
                     </div>

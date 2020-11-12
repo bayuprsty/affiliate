@@ -140,7 +140,7 @@
                 dom: '<"toolbar">frtip',
                 initComplete: function(){
                     $("div.toolbar")
-                        .html('<button id="affiliate-button" style="float: left;" class="btn btn-primary btn-sm" style="margin-left: 15px;">Data Per Vendor</button>');           
+                        .html('<button id="affiliate-button" style="float: left;" class="btn btn-primary btn-sm" style="margin-left: 15px;">Data Per User</button>');           
                 },
                 ajax: {
                     url: "{{ route('datatableAffiliateVendorAdmin') }}",

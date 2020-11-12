@@ -4,15 +4,50 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
 use Validator;
+use Mail;
 
 use App\Lead;
 use App\Transaction;
 
 class ApiController extends Controller
 {
+    public function login(Request $request) {
+        $validator = Validator::make($request->all(), [
+            'username' => 'required',
+            'password' => 'required',
+        ], [
+            'username.required' => 'Username Required',
+            'password.required' => 'Password Required'
+        ]);
+
+        if ($validator->fails()) {
+            foreach ($validator->errors()->messages() as $value) {
+                $error[] = $value[0];
+            }
+
+            $stringError = implode(', ', $error);
+
+            return $this->sendResponse($stringError, '', 221);
+        }
+
+        $username = 'affiliateapi';
+        $password = 'affiliatedvnt101112';
+
+        if ($request->username !== $username && $request->password !== $password) {
+            return $this->sendResponse('Username dan Paswword Salah', $request->all(), 400);
+        }
+
+        $dataLogin = [
+            'username' => $reuest->username,
+            'password' => $request->password,
+        ];
+
+        
+    }
     public function setDataLead(Request $request) {
         $validator = Validator::make($request->all(), [
             'customer_name' => 'required',
@@ -77,20 +112,46 @@ class ApiController extends Controller
 
         $lead = Lead::where('email', $request->email)->get();
 
-        if (count($lead) > 0) {
-            $data = [
-                'lead_id' => $lead[0]->id,
-                'service_commission_id' => $request->service_commission_id,
-                'transaction_date' => $request->transaction_date,
-                'amount' => $request->amount,
-                'commission' => !empty($request->commission) ? $request->commission : NULL,
-            ];
+        DB::beginTransaction();
 
-            $transactionCreated = Transaction::create($data);
+        try {
+            if (count($lead) > 0) {
+                $data = [
+                    'lead_id' => $lead[0]->id,
+                    'service_commission_id' => $request->service_commission_id,
+                    'transaction_date' => date('m-d-Y', strtotime($request->transaction_date)),
+                    'amount' => $request->amount,
+                    'commission' => !empty($request->commission) ? $request->commission : Transaction::getCommissionValue($request->service_commission_id, $request->amount),
+                ];
+    
+                $transactionCreated = Transaction::create($data);
+    
+                if ($transactionCreated) {
+                    $lead[0]->update(['status' => Lead::SUCCESS]);
+                    
+                    $dataEmail = [
+                        'customer_name' => $transactionCreated->lead->customer_name,
+                        'email' => $transactionCreated->lead->email,
+                        'no_telepon' => $transactionCreated->lead->no_telepon,
+                        'transaction_date' => $this->convertDateView($transactionCreated->transaction_date),
+                        'amount' => $this->currencyView($transactionCreated->amount),
+                        'commission' => $this->currencyView($transactionCreated->commission)
+                    ];
 
-            if ($transactionCreated) {
-                return $this->sendResponse('Transaction Created', $transactionCreated);
+                    $affiliateEmail = $transactionCreated->lead->user->email;
+
+                    Mail::send('admin.transaction._email', $dataEmail, function($message) use ($affiliateEmail) {
+                        $message->to($affiliateEmail)->subject('Affiliate Transaction Success');
+                    });
+
+                    DB::commit();
+                    return $this->sendResponse('Transaction Created', $transactionCreated);
+                }
             }
+        } catch (Exception $e) {
+            DB::rollback();
         }
+
+        
     }
 }

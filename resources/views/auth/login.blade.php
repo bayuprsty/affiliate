@@ -8,6 +8,13 @@
     <div class="row justify-content-center">
         <div class="col-md-9">
             <div class="card-group py-5">
+                @if (session('verified'))
+                    <div class="col-md-12">
+                        <div class="alert alert-success" role="alert">
+                            {{ session('verified') }}
+                        </div>
+                    </div>
+                @endif
                 <div class="card o-hidden border-0 shadow-lg my-5">
                     <div class="card-body p-5">
                         <h1>Login</h1>

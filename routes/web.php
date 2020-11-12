@@ -18,8 +18,14 @@ Route::get('/', function () {
 Route::get('/login', 'AuthController@showLoginForm')->name('login');
 Route::post('/login', 'AuthController@login')->name('auth.login');
 Route::get('/register', 'AuthController@showRegisterForm')->name('register');
-Route::post('/register', 'AuthController@register')->name('auth.register');
+Route::post('/register_user', 'AuthController@register')->name('auth.register');
 Route::post('/logout', 'AuthController@logout')->name('logout');
+
+Route::get('/verify/{id}', 'AuthController@verifyPage')->name('verify'); // page seteleah register, pemberitahuan untuk konfirmasi email
+Route::post('/resend', 'AuthController@resendConfirmation')->name('verification.resend');
+
+Route::get('/confirmation_success/{id}', 'AuthController@confirmationSuccess')->name('auth.confirmation_success');
+Route::post('/confirmation', 'AuthController@setConfirmation')->name('auth.confirmation'); // update email_confirmed and verified at in users table
 
 Route::group(['middleware' => 'auth'], function() {
     Route::get('/all', 'NotificationController@allNotification')->name('all.notification');
@@ -102,6 +108,10 @@ Route::group(['middleware' => 'auth'], function() {
             Route::get('/edit', 'Admin\PayoutController@edit')->name('payout.edit');
             Route::post('/update', 'Admin\PayoutController@update')->name('payout.update');
             Route::post('/delete', 'Admin\PayoutController@destroy')->name('payout.destroy');
+        });
+
+        Route::group(['prefix' => 'script'], function() {
+            Route::get('/referral_link', 'Admin\ScriptController@index')->name('script.index');
         });
 
         Route::get('/setCommission', 'AjaxController@setCommission')->name('ajax.setCommission');

@@ -19,6 +19,8 @@ class User extends Authenticatable
         'nama_belakang',
         'no_telepon',
         'email',
+        'email_confirmed',
+        'email_verified_at',
         'gender_id',
         'jalan',
         'provinsi',

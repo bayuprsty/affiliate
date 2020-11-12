@@ -51,11 +51,11 @@
                                         <th>Username Aff</th>
                                         <th>Username Cust</th>
                                         <th>Vendor</th>
-                                        <th>Sign Up Date</th>
                                         <th>Product/Services</th>
                                         <th>Date</th>
                                         <th>Amount</th>
                                         <th>Commission</th>
+                                        <th>Created By</th>
                                         <th>Status</th>
                                         <th></th>
                                     </tr>
@@ -89,25 +89,25 @@
                 }
             },
             columnDefs: [
-                { orderable: false, targets: [0, 4, 5, 6, 7, 8] },
+                { orderable: false, targets: [5, 6, 7, 8] },
+                { targets: [0], visible: false },
             ],
-            columns: [
+            columns: [ 
                 {
                     data: 'DT_RowIndex',
                     name: 'DT_RowIndex',
-                },  
+                },
                 {data: 'username_aff', name: 'username_aff'},
                 {data: 'customer_name', name: 'customer_name'},
                 {data: 'vendor_name', name: 'vendor_name'},
-                {data: 'signup_date', name: 'signup_date'},
                 {data: 'product_service', name: 'product_service'},
                 {data: 'transaction_date', name: 'transaction_date'},
                 {data: 'amount', name: 'amount'},
                 {data: 'commission', name: 'commission'},
+                {data: 'created_by', name: 'created_by'},
                 {data: 'status', name: 'status'},
                 {data: 'action', name: 'action'}
             ],
-            order: [[1, 'ASC']],
         });
 
         $('#searchData').click(function() {
@@ -181,6 +181,44 @@
             }
         });
 
+        $('#productService').on('change', function() {
+            var service_id = $(this).val();
+            var amount = $('#amount').val();
+            
+            if (amount > 0 && service_id !== '') {
+                $.ajax({
+                    url: "{{ route('ajax.setCommission') }}",
+                    type: 'GET',
+                    datatype: 'JSON',
+                    data: {service_id: service_id, amount: amount},
+                    success: function(response) {
+                        $('#commission').val(response.commission);
+                    }
+                });
+            } else {
+                $('#commission').val(0);
+            }
+        });
+
+        $('#amount').keyup(function() {
+            var service_id = $('#productService').val();
+            var amount = $(this).val();
+            
+            if (service_id !== '' && amount > 0) {
+                $.ajax({
+                    url: "{{ route('ajax.setCommission') }}",
+                    type: 'GET',
+                    dataType: 'JSON',
+                    data: {service_id: service_id, amount: amount},
+                    success: function(response) {
+                        $('#commission').val(response.commission);
+                    }
+                });
+            } else {
+                $('#commission').val(0);
+            }
+        });
+
         $('body').on('click', '#button-store', function(e) {
             e.preventDefault();
 
@@ -226,7 +264,7 @@
                     }
                 }
             });
-        })
+        });
     });
 </script>
 @endsection

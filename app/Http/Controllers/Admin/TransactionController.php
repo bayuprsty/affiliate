@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use PDF;
 use Validator;
+use Mail;
 
 use App\Transaction;
 use App\Vendor;
@@ -86,13 +87,28 @@ class TransactionController extends Controller
                     $transactionCreated = Transaction::create($dataTransaction);
 
                     if ($transactionCreated) {
+                        $data = [
+                            'customer_name' => $transactionCreated->lead->customer_name,
+                            'email' => $transactionCreated->lead->email,
+                            'no_telepon' => $transactionCreated->lead->no_telepon,
+                            'transaction_date' => $this->convertDateView($transactionCreated->transaction_date),
+                            'amount' => $this->currencyView($transactionCreated->amount),
+                            'commission' => $this->currencyView($transactionCreated->commission)
+                        ];
+
+                        $affiliateEmail = $transactionCreated->lead->user->email;
+
+                        Mail::send('admin.transaction._email', $data, function($message) use ($affiliateEmail) {
+                            $message->to($affiliateEmail)->subject('Affiliate Transaction Success');
+                        });
+
                         DB::commit();
                         return $this->sendResponse('Transaction Created Successfully');
                     }
                 }
             } catch (Exception $e) {
                 DB::rollback();
-                dd($e);
+                return $this->sendResponse('Transaction Failed', $e->getErrors());
             }
         }
     }

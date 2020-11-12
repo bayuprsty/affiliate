@@ -64,6 +64,7 @@
           <div class="bg-white py-2 collapse-inner rounded">
             <a class="collapse-item {{ setActive('komisi.index') }}" href="{{ route('komisi.index') }}">Komisi</a>
             <a class="collapse-item {{ setActive('payout.index') }}" href="{{ route('payout.index') }}">Minimum Payout</a>
+            <a class="collapse-item {{ setActive('script.index') }}" href="{{ route('script.index') }}">Script Referral Link</a>
           </div>
         </div>
     </li>

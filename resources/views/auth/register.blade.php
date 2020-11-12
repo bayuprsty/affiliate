@@ -13,11 +13,12 @@
                         <h1>Register</h1>
                         <p class="text-muted">Create Your Affiliate Account</p>
 
-                      	<form class="form-horizontal" id="registerForm">
+                      	<form class="form-horizontal" enctype="multipart/form-data" method="POST" action="{{ route('auth.register') }}">
+                            @csrf
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="form-group row">
-                                        <label class="col-sm-3 col-form-label">Username</label>
+                                        <label class="col-sm-3 col-form-label">Username <i class="text-xs text-danger">*</i></label>
                                         <div class="col-sm-9">
                                             <input class="form-control form-control-sm {{ $errors->has('username') ? ' is-invalid' : '' }}" 
                                                     type="text" 
@@ -27,7 +28,7 @@
                                         </div>
                                     </div>
                                     <div class="form-group row">
-                                        <label class="col-sm-3 col-form-label">Passowrd</label>
+                                        <label class="col-sm-3 col-form-label">Password <i class="text-xs text-danger">*</i></label>
                                         <div class="col-sm-9">
                                             <input class="form-control form-control-sm" 
                                                 type="password" 
@@ -36,7 +37,7 @@
                                         </div>
                                     </div>
                                     <div class="form-group row">
-                                        <label class="col-sm-3 col-form-label">Ulangi Passowrd</label>
+                                        <label class="col-sm-3 col-form-label">Ulangi Password <i class="text-xs text-danger">*</i></label>
                                         <div class="col-sm-9">
                                             <input class="form-control form-control-sm" 
                                                 type="password" 
@@ -47,90 +48,97 @@
                                     <hr>
                                     <div class="form-group row">
                                         <label class="col-sm-3 col-form-label">
-                                            Nama Depan
+                                            Nama Depan <i class="text-xs text-danger">*</i>
                                         </label>
                                         <div class="col-sm-9">
-                                            <input type="text" name="nama_depan" placeholder="Nama Depan" class="form-control form-control-sm">
+                                            <input type="text" name="nama_depan" placeholder="Nama Depan" class="form-control form-control-sm" required>
                                         </div>
                                     </div>
                                     <div class="form-group row">
-                                        <label class="col-sm-3 col-form-label">Nama Belakang</label>
+                                        <label class="col-sm-3 col-form-label">Nama Belakang <i class="text-xs text-danger">*</i></label>
                                         <div class="col-sm-9">
-                                            <input type="text" name="nama_belakang" placeholder="Nama Belakang" class="form-control form-control-sm">
+                                            <input type="text" name="nama_belakang" placeholder="Nama Belakang" class="form-control form-control-sm" required>
                                         </div>
                                     </div>
                                     <div class="form-group row">
-                                        <label class="col-sm-3 col-form-label">No Telepon</label>
+                                        <label class="col-sm-3 col-form-label">No Telepon <i class="text-xs text-danger">*</i></label>
                                         <div class="col-sm-9">
-                                            <input type="text" name="no_telepon" placeholder="No Telepon" class="form-control form-control-sm">
+                                            <input type="text" name="no_telepon" placeholder="No Telepon" class="form-control form-control-sm" required>
                                         </div>
                                     </div>
                                     <div class="form-group row">
-                                        <label class="col-sm-3 col-form-label">Email</label>
+                                        <label class="col-sm-3 col-form-label">Email <i class="text-xs text-danger">*</i></label>
                                         <div class="col-sm-9">
                                             <input type="email" name="email" placeholder="ex: xxxx@gmail.com" class="form-control form-control-sm" required>
                                         </div>
                                     </div>
                                     <div class="form-group row">
-                                        <label class="col-sm-3 col-form-label">Jenis Kelamin</label>
+                                        <label class="col-sm-3 col-form-label">Jenis Kelamin <i class="text-xs text-danger">*</i></label>
                                         <div class="col-sm-9">
                                             @foreach($gender as $value)
                                             <div class="form-check form-check-inline mr-1" id="genderList">
-                                                <input type="radio" name="gender_id" class="form-check-input">
+                                                <input type="radio" name="gender_id" class="form-check-input" required>
                                                 <label class="form-check-label">{{ $value->name }}</label>
                                             </div>
                                             @endforeach
                                         </div>
                                     </div>
                                     <div class="form-group row">
-                                        <label class="col-sm-3 col-form-label">Alamat</label>
+                                        <label class="col-sm-3 col-form-label">Alamat <i class="text-xs text-danger">*</i></label>
                                         <div class="col-sm-9">
-                                            <textarea type="text" name="jalan" placeholder="Jalan" class="form-control form-control-sm" rows="4"></textarea>
+                                            <textarea type="text" name="jalan" placeholder="Jalan" class="form-control form-control-sm" rows="4" required></textarea>
                                         </div>
                                     </div>
                                     <div class="form-group row">
                                         <label class="col-sm-3 col-form-label"></label>
                                         <div class="col-sm-3">
-                                            <input type="text" name="provinsi" placeholder="Provinsi" class="form-control form-control-sm">
+                                            <input type="text" name="provinsi" placeholder="Provinsi" class="form-control form-control-sm" required>
                                         </div>
                                         <div class="col-sm-3">
-                                            <input type="text" name="kabupaten_kota" placeholder="Kabupaten / Kota" class="form-control form-control-sm">
+                                            <input type="text" name="kabupaten_kota" placeholder="Kabupaten / Kota" class="form-control form-control-sm" required>
                                         </div>
                                         <div class="col-sm-3">
-                                            <input type="text" name="kecamatan" placeholder="Kecamatan" class="form-control form-control-sm">
+                                            <input type="text" name="kecamatan" placeholder="Kecamatan" class="form-control form-control-sm" required>
                                         </div>
                                     </div>
                                     <div class="form-group row">
                                         <label class="col-sm-3 col-form-label"></label>
                                         <div class="col-sm-3">
-                                            <input type="text" name="kodepos" placeholder="Kodepos" class="form-control form-control-sm">
+                                            <input type="text" name="kodepos" placeholder="Kodepos" class="form-control form-control-sm" required>
                                         </div>
                                     </div>
                                     <div class="form-group row">
                                         <label class="col-sm-3 col-form-label">
-                                            Nomor KTP
+                                            Nomor KTP <i class="text-xs text-danger">*</i>
                                         </label>
                                         <div class="col-sm-9">
-                                            <input type="text" name="ktp" placeholder="Nomor KTP" class="form-control form-control-sm">
-                                            <i class="text-xs text-danger">* required</i>
+                                            <input type="text" name="ktp" placeholder="Nomor KTP" class="form-control form-control-sm" required>
                                         </div>
                                     </div>
                                     <div class="form-group row">
-                                        <label class="col-sm-3 col-form-label">Rekening</label>
+                                        <label class="col-sm-3 col-form-label">
+                                            Upload Foto KTP <i class="text-xs text-danger">*</i>
+                                        </label>
                                         <div class="col-sm-9">
-                                            <input type="text" name="nama_bank" placeholder="Bank" class="form-control form-control-sm">
+                                            <input type="file" name="foto_ktp" required>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-sm-3 col-form-label">Rekening <i class="text-xs text-danger">*</i></label>
+                                        <div class="col-sm-9">
+                                            <input type="text" name="nama_bank" placeholder="Bank" class="form-control form-control-sm" required>
                                         </div>
                                     </div>
                                     <div class="form-group row">
                                         <label class="col-sm-3 col-form-label"></label>
                                         <div class="col-sm-9">
-                                            <input type="text" name="nomor_rekening" placeholder="Nomor Rekening" class="form-control form-control-sm">
+                                            <input type="text" name="nomor_rekening" placeholder="Nomor Rekening" class="form-control form-control-sm" required>
                                         </div>
                                     </div>
                                     <div class="form-group row">
                                         <label class="col-sm-3 col-form-label"></label>
                                         <div class="col-sm-9">
-                                            <input type="text" name="atasnama_bank" placeholder="Rekening Atas Nama" class="form-control form-control-sm">
+                                            <input type="text" name="atasnama_bank" placeholder="Rekening Atas Nama" class="form-control form-control-sm" required>
                                         </div>
                                     </div>
                                 </div>
@@ -138,7 +146,7 @@
                             <hr>
                             <div class="row">
                                 <div class="col-md-12">
-                                    <button class="btn btn-info px-3" id="register-button">Register</button>
+                                    <button type="submit" class="btn btn-info px-3">Register</button>
                                 </div>
                             </div>
                         </form>
@@ -147,29 +155,4 @@
             </div>
         </div>
     </div>
-@endsection
-
-@section('js')
-<script>
-    $(document).ready(function() {
-        $('body').on('click', '#register-button', function(e) {
-            e.preventDefault();
-
-            $.ajax({
-                url: "{{ route('auth.register') }}",
-                method: "POST",
-                datatype: "JSON",
-                data: $('#registerForm').serialize(),
-                success: function (res) {
-                    if (res.code == 200) {
-                        $.notify(res.message, "success");
-                        window.location.href = "{{ route('login') }}";
-                    } else {
-                        $.notify(res.message, "error");
-                    }
-                }
-            });
-        });
-    });
-</script>
 @endsection
