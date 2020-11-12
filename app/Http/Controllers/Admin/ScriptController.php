@@ -11,9 +11,9 @@ class ScriptController extends Controller
 {
     public function index() {
         $script = Script::all();
-
-        $id = $script[0]->id;
-        $scriptjs = htmlspecialchars($script[0]->script);
+        
+        $id = isset($script) ? $script[0]->id : '';
+        $scriptjs = isset($script) ? htmlspecialchars($script[0]->script) : '';
 
         return view('admin.script.index', compact('id', 'scriptjs'));
     }
