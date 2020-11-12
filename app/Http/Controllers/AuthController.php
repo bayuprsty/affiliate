@@ -43,7 +43,7 @@ class AuthController extends Controller
             'password' => $request->password
         ];
 
-        if (auth()->attempt($login)) {
+        if (Auth::attempt($login)) {
             if (Auth::user()->email_confirmed == false) {
                 Auth::logout();
                 return redirect()->route('login')->with(['error' => 'Please Verify Your Email First']);
