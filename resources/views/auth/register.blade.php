@@ -77,7 +77,7 @@
                                         <div class="col-sm-9">
                                             @foreach($gender as $value)
                                             <div class="form-check form-check-inline mr-1" id="genderList">
-                                                <input type="radio" name="gender_id" class="form-check-input" required>
+                                                <input type="radio" name="gender_id" class="form-check-input" value="{{ $value->id }}" required>
                                                 <label class="form-check-label">{{ $value->name }}</label>
                                             </div>
                                             @endforeach
