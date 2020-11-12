@@ -108,6 +108,9 @@
                 {data: 'status', name: 'status'},
                 {data: 'action', name: 'action'}
             ],
+            drawCallback: function() {
+                $('[data-toggle="tooltip"]').tooltip();
+            },
         });
 
         $('#searchData').click(function() {

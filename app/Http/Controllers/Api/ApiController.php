@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 
 use Validator;
@@ -42,12 +43,20 @@ class ApiController extends Controller
         }
 
         $dataLogin = [
-            'username' => $reuest->username,
+            'username' => $request->username,
             'password' => $request->password,
         ];
-
         
+        if (Auth::attempt($dataLogin)) {
+            $user = Auth::user();
+            $data['token'] = $user->createToken('nApp')->accessToken;
+
+            return $this->sendResponse('OK', $data);
+        } else {
+            return $this->sendResponse('Unauthorized. Data User Not Found', $dataLogin);
+        }
     }
+
     public function setDataLead(Request $request) {
         $validator = Validator::make($request->all(), [
             'customer_name' => 'required',

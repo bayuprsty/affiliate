@@ -53,14 +53,6 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-3">
-                                <div class="text-center">
-                                    <img src="/uploads/avatar/{{ $user->avatar }}" alt="" class="img-fluid" style="width: 200px; height: 200px; border-radius: 50%;">
-                                    <br>
-                                    <br>
-                                    <span class="text-center">{{ $user->avatar }}</span>
-                                </div>
-                            </div>
                         </div>
                         <div class="row">
                             <div class="col-md-12">
@@ -89,9 +81,33 @@
                                     </div>
                                 </div>
                                 <div class="form-group row">
-                                    <label class="col-sm-3 col-form-label">Nomor Rekening</label>
+                                    <label class="col-sm-3 col-form-label">Nomor KTP</label>
+                                    <div class="col-sm-6">
+                                        {{ $user->ktp }}
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-sm-3 col-form-label">Foto KTP</label>
+                                    <div class="col-sm-6">
+                                        <img src="/uploads/avatar/{{ $user->avatar }}" alt="" class="img-fluid" style="width: 300px; height: 200px; border-radius: 5%;">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-sm-3 col-form-label">Rekening</label>
+                                    <div class="col-sm-6">
+                                        {{ $user->nama_bank }}
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-sm-3 col-form-label"></label>
                                     <div class="col-sm-6">
                                         {{ $user->nomor_rekening }}
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-sm-3 col-form-label"></label>
+                                    <div class="col-sm-6">
+                                        {{ $user->atasnama_bank }}
                                     </div>
                                 </div>
                                 <div class="form-group row">
@@ -102,11 +118,13 @@
                                 </div>
                                 <div class="form-group row">
                                     <div class="col-sm-12 text-center">
+                                    @can('isAdmin')
                                         @if($user->id == Auth::id())
                                             <a href="{{ route('user.editProfile') }}" class="btn btn-warning btn-xs">Edit</a>
                                         @else
                                             <a href="{{ route('user.editUser', $user->id) }}" class="btn btn-warning btn-xs">Edit</a>
                                         @endif
+                                    @endcan
                                     </div>
                                 </div>
                             </div>

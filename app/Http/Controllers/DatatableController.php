@@ -354,7 +354,7 @@ class DatatableController extends Controller
                         ->editColumn('status', function($row){
                             if ($row->cancel == 1) {
                                 // $statusLead = '<span id="button" aria-describedby="tooltip">CANCELED</span><div id="tooltip" role="tooltip">TES 123<div id="arrow" data-popper-arrow></div></div>';
-                                $statusLead = '<span class="badge badge-danger">CANCELED</span>';
+                                $statusLead = '<span class="badge badge-danger" data-toggle="tooltip" data-placement="top" title="" data-original-title="'.$row->cancel_reason.'">CANCELED</span>';
                             } else {
                                 if ($row->lead->status == Lead::ON_PROCESS) {
                                     $statusLead = '<span class="badge badge-primary">ON PROCESS</span>';
@@ -721,12 +721,16 @@ class DatatableController extends Controller
                             return $this->currencyView($row->commission);
                         })
                         ->editColumn('status', function($row){
-                            if ($row->lead->status == Lead::ON_PROCESS) {
-                                $statusLead = '<span class="badge badge-primary">ON PROCESS</span>';
-                            } else if ($row->lead->status == Lead::SUCCESS) {
-                                $statusLead = '<div class="badge badge-success">SUCCESS</div>';
+                            if ($row->cancel == 1) {
+                                $statusLead = '<span class="badge badge-danger" data-toggle="tooltip" data-placement="top" title="" data-original-title="'.$row->cancel_reason.'">CANCELED</span>';
                             } else {
-                                $statusLead = '<span class="badge badge-danger">CANCELED</span>';
+                                if ($row->lead->status == Lead::ON_PROCESS) {
+                                    $statusLead = '<span class="badge badge-primary">ON PROCESS</span>';
+                                } else if ($row->lead->status == Lead::SUCCESS) {
+                                    $statusLead = '<div class="badge badge-success">SUCCESS</div>';
+                                } else {
+                                    $statusLead = '<span class="badge badge-danger">CANCELED</span>';
+                                }
                             }
 
                             return $statusLead;

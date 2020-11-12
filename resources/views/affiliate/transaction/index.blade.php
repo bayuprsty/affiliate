@@ -101,6 +101,9 @@
                 {data: 'commission', name: 'commission'},
                 {data: 'status', name: 'status'},
             ],
+            drawCallback: function() {
+                $('[data-toggle="tooltip"]').tooltip();
+            },
         });
 
         $('#searchData').click(function() {

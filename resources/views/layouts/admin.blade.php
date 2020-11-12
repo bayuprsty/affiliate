@@ -46,9 +46,6 @@
     <!-- Bootstrap core JavaScript-->
     <script src="{{ asset('sbadmin2-theme/vendor/jquery/jquery.min.js')}}"></script>
     <script src="{{ asset('sbadmin2-theme/vendor/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
-    <script src="https://unpkg.com/@popperjs/core@2"></script>
-    <!-- <script src="{{ asset('assets/js/popovers.js') }}"></script>
-    <script src="{{ asset('assets/js/tooltips.js') }}"></script> -->
 
     <!-- Core plugin JavaScript-->
     <script src="{{ asset('sbadmin2-theme/vendor/jquery-easing/jquery.easing.min.js')}}"></script>
@@ -59,6 +56,7 @@
     <script src="{{ asset('sbadmin2-theme/vendor/datatables/dataTables.bootstrap4.min.js')}}"></script>
     <script src="{{ asset('sbadmin2-theme/js/notify.min.js')}}"></script>
     <script src="{{ asset('sbadmin2-theme/js/select2.min.js')}}"></script>
+    <script src="{{ asset('sbadmin2-theme/ckeditor/ckeditor.js')}}"></script>
 
     <script>
         $(document).ready(function() {

@@ -112,6 +112,7 @@ Route::group(['middleware' => 'auth'], function() {
 
         Route::group(['prefix' => 'script'], function() {
             Route::get('/referral_link', 'Admin\ScriptController@index')->name('script.index');
+            Route::post('/store', 'Admin\ScriptController@store')->name('script.store');
         });
 
         Route::get('/setCommission', 'AjaxController@setCommission')->name('ajax.setCommission');

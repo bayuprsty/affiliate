@@ -1,6 +1,5 @@
 <?php
-    function setActive($uri, $output = 'active')
-    {
+    function setActive($uri, $output = 'active') {
         if( is_array($uri) ) {
             foreach ($uri as $u) {
                 if (Route::is($u)) {
@@ -14,8 +13,7 @@
         }
     }
 
-    function setDropdownShow($uri, $output = 'show')
-    {
+    function setDropdownShow($uri, $output = 'show') {
         if( is_array($uri) ) {
             foreach ($uri as $u) {
                 if (Route::is($u)) {

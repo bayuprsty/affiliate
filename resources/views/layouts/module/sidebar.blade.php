@@ -55,12 +55,12 @@
             <span>Management User</span>
         </a>
     </li>
-    <li class="nav-item {{ setActive(['komisi.index', 'payout.index']) }}">
+    <li class="nav-item {{ setActive(['komisi.index', 'payout.index', 'script.index']) }}">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#setting" aria-expanded="true" aria-controls="setting">
           <i class="fas fa-fw fa-cog"></i>
           <span>Setting</span>
         </a>
-        <div id="setting" class="collapse {{ setDropdownShow(['komisi.index', 'payout.index']) }}" data-parent="#accordionSidebar">
+        <div id="setting" class="collapse {{ setDropdownShow(['komisi.index', 'payout.index', 'script.index']) }}" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
             <a class="collapse-item {{ setActive('komisi.index') }}" href="{{ route('komisi.index') }}">Komisi</a>
             <a class="collapse-item {{ setActive('payout.index') }}" href="{{ route('payout.index') }}">Minimum Payout</a>
