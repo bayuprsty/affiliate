@@ -19,15 +19,15 @@ class ApiAuthenticate
      */
     public function handle($request, Closure $next)
     {
-        $accessToken = $request->bearerToken();
+        // $accessToken = $request->bearerToken();
         $token = $request->header('X-TOKEN-ID');
 
-        if (is_null($accessToken)) {
-            return ApiResponse::send("Unauthorized. Please Login first", [], 401);
-        }
+        // if (is_null($accessToken)) {
+        //     return ApiResponse::send("Unauthorized. Please Login first", [], 401);
+        // }
         
         if (is_null($token)) {
-            return ApiResponse::send("No Token Found", [], 400);
+            return ApiResponse::send("Unauthorized. Please Login First", [], 401);
         }
 
         $dataToken = OAuth::findOrfail($token);
