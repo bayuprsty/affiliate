@@ -12,8 +12,8 @@ use App\Helpers\ApiResponse;
 use Validator;
 use Mail;
 
-use App\Lead;
-use App\Transaction;
+use App\Models\Lead;
+use App\Models\Transaction;
 
 class ApiController extends Controller
 {
