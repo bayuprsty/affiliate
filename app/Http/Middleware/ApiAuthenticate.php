@@ -30,7 +30,7 @@ class ApiAuthenticate
             return ApiResponse::send("Unauthorized. Please Login First", [], 401);
         }
 
-        $dataToken = OAuth::findOrfail($token);
+        $dataToken = OAuth::where('id', $token)->first();
 
         if (is_null($dataToken)) {
             return ApiResponse::send("Token Invalid. Please re-login", [], 500);
