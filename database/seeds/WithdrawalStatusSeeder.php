@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
-use App\WithdrawalStatus;
+use App\Models\WithdrawalStatus;
 
 class WithdrawalStatusSeeder extends Seeder
 {
