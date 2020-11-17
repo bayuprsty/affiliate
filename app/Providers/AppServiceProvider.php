@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Blade;
 use Gate;
 
+use Carbon\Carbon;
+
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -27,6 +29,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         Schema::defaultStringLength(191);
+        Carbon::setLocale('id');
 
         Gate::define('isAdmin', function($user) {
             return $user->role == 'admin';

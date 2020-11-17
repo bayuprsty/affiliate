@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
+use App\Helpers\ApiResponse;
 
 use Validator;
 use Mail;
@@ -32,14 +33,14 @@ class ApiController extends Controller
 
             $stringError = implode(', ', $error);
 
-            return $this->sendResponse($stringError, '', 221);
+            return ApiResponse::send($stringError, '', 221);
         }
 
         $username = 'affiliateapi';
         $password = 'affiliatedvnt101112';
 
         if ($request->username !== $username && $request->password !== $password) {
-            return $this->sendResponse('Username dan Paswword Salah', $request->all(), 400);
+            return ApiResponse::send('Username dan Paswword Salah', $request->all(), 400);
         }
 
         $dataLogin = [
@@ -49,11 +50,16 @@ class ApiController extends Controller
         
         if (Auth::attempt($dataLogin)) {
             $user = Auth::user();
-            $data['token'] = $user->createToken('nApp')->accessToken;
+            $token = $user->createToken('Personal Access Token');
 
-            return $this->sendResponse('OK', $data);
+            $data['grant_type'] = 'Bearer';
+            $data['access_token'] = $token->accessToken;
+            $data['token_id'] = $token->token->id;
+            $data['expired_at'] = $token->token->expires_at;
+
+            return ApiResponse::send('OK', $data);
         } else {
-            return $this->sendResponse('Unauthorized. Data User Not Found', $dataLogin);
+            return ApiResponse::send('Unauthorized. Data User Not Found', $dataLogin, 401);
         }
     }
 
@@ -77,7 +83,7 @@ class ApiController extends Controller
 
             $stringError = implode(', ', $error);
 
-            return $this->sendResponse($stringError, '', 221);
+            return ApiResponse::send($stringError, '', 422);
         }
 
         $dataLead = Lead::findOrfail($request->lead_id);
@@ -94,7 +100,7 @@ class ApiController extends Controller
             $updated = $dataLead->update($data);
 
             if ($updated) {
-                return $this->sendResponse('Lead Created', $updated);
+                return ApiResponse::send('Lead Created', $updated);
             }
         }
     }
@@ -116,7 +122,7 @@ class ApiController extends Controller
 
             $stringError = implode(', ', $error);;
 
-            return $this->sendResponse($stringError, '', 221);
+            return ApiResponse::send($stringError, '', 422);
         }
 
         $lead = Lead::where('email', $request->email)->get();
@@ -140,8 +146,8 @@ class ApiController extends Controller
                     
                     $dataEmail = [
                         'customer_name' => $transactionCreated->lead->customer_name,
-                        'email' => $transactionCreated->lead->email,
-                        'no_telepon' => $transactionCreated->lead->no_telepon,
+                        'email' => $this->hideEmail($transactionCreated->lead->email),
+                        'no_telepon' => $this->hidePhoneNumber($transactionCreated->lead->no_telepon),
                         'transaction_date' => $this->convertDateView($transactionCreated->transaction_date),
                         'amount' => $this->currencyView($transactionCreated->amount),
                         'commission' => $this->currencyView($transactionCreated->commission)
@@ -154,11 +160,12 @@ class ApiController extends Controller
                     });
 
                     DB::commit();
-                    return $this->sendResponse('Transaction Created', $transactionCreated);
+                    return ApiResponse::send('Transaction Created', $transactionCreated);
                 }
             }
         } catch (Exception $e) {
             DB::rollback();
+            return ApiResponse::send($e->getMessage(), [], 500);
         }
 
         

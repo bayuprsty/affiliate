@@ -1,9 +1,9 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Vendor;
+use App\Models\Vendor;
 
 class ServiceCommission extends Model
 {

@@ -4,10 +4,11 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\ServiceCommission;
-use App\CommissionType;
-use App\Vendor;
-use App\Transaction;
+
+use App\Models\ServiceCommission;
+use App\Models\CommissionType;
+use App\Models\Vendor;
+use App\Models\Transaction;
 
 class KomisiController extends Controller
 {

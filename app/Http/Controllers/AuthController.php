@@ -11,8 +11,8 @@ use Hash;
 use Image;
 use Mail;
 
-use App\Gender;
-use App\User;
+use App\Models\Gender;
+use App\Models\User;
 
 use App\Mail\VerifyEmail;
 
@@ -85,6 +85,8 @@ class AuthController extends Controller
 
         Image::make($foto_ktp)->resize(300, 300)->save( public_path('uploads/avatar/'.$filename) );
 
+        $permitted_chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
         $data = [
             'username'      => $request->username,
             'password'      => bcrypt($request->password),
@@ -104,42 +106,51 @@ class AuthController extends Controller
             'nomor_rekening' => $request->nomor_rekening,
             'join_date'     => Carbon::NOW(),
             'avatar'        => $filename,
+            'code_verify'   => substr(str_shuffle($permitted_chars), 0, 30),
         ];
 
         $user = User::create($data);
 
         if ($user) {
             $data = [
-                'link_verify' => route('auth.confirmation_success', $user->id)
+                'link_verify' => route('auth.confirmation_success').'?id='.$user->id.'&code='.$user->code_verify
             ];
-
-            // Mail::to($user->email)->send(new VerifyEmail($linkEmail));
-            Mail::send('auth.email.confirmation', $data, function($message) use ($user) {
+            
+            Mail::send(['html' => 'auth.email.confirmation'], $data, function($message) use ($user) {
                 $message->to($user->email)->subject('Email Verification');
             });
 
-            // return view('auth.verify', compact('id'));
-            return redirect()->route('verify', $user->id);
+            $data = [
+                'id' => $user->id,
+                'code_verify' => $user->code_verify,
+                'link' => route('verify').'?id='.$user->id.'&code='.$user->code_verify,
+            ];
+
+            return $this->sendResponse('Register Successfully', $data);
         } else {
             return $this->sendResponse('Register Failed!', '', 221);
         }
     }
 
-    public function verifyPage($id) {
-        return view('auth.verify', compact('id'));
+    public function verifyPage(Request $request) {
+        $id = $request->id;
+        $code_verify = $request->code;
+
+        return view('auth.verify', compact('id', 'code_verify'));
     }
 
     public function resendConfirmation(Request $request) {
         if ($request->ajax()) {
-            $user = User::findOrfail($reqeust->id);
+            $findUser = User::where(['id' => $request->id, 'code_verify' => $request->verify_code])->get();
 
-            if (isset($user)) {
+            if (count($findUser) > 0) {
+                $user = $findUser[0];
+
                 $data = [
-                    'link_verify' => route('auth.confirmation_success', $user->id)
+                    'link_verify' => route('auth.confirmation_success').'?id='.$user->id.'&code='.$user->code_verify
                 ];
     
-                // Mail::to($user->email)->send(new VerifyEmail($linkEmail));
-                Mail::send('auth.email.confirmation', $data, function($message) use ($user) {
+                Mail::send(['html' => 'auth.email.confirmation'], $data, function($message) use ($user) {
                     $message->to($user->email)->subject('Email Verification');
                 });
 
@@ -148,18 +159,18 @@ class AuthController extends Controller
         }
     }
 
-    public function confirmationSuccess($id) {
-        $user = User::findOrfail($id);
+    public function confirmationSuccess(Request $request) {
+        $user = User::where(['id' => $request->id, 'code_verify' => $request->code])->get();
 
         $dataUpdate = [
             'email_confirmed' => 1,
             'email_verified_at' => Carbon::NOW(),
         ];
 
-        $verified = $user->update($dataUpdate);
+        $verified = $user[0]->update($dataUpdate);
 
         if ($verified) {
-            return redirect(route('login'))->with(['verified' => 'Thanks For Verify Your Email. You can Login NOW']);
+            return redirect('login')->with('verified', 'Thanks For Verify Your Email. You can Login NOW');
         }
     }
 

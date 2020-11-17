@@ -9,11 +9,11 @@ use PDF;
 use Validator;
 use Carbon\Carbon;
 
-use App\Lead;
-use App\ServiceCommission;
-use App\User;
-use App\Transaction;
-use App\Vendor;
+use App\Models\Lead;
+use App\Models\ServiceCommission;
+use App\Models\User;
+use App\Models\Transaction;
+use App\Models\Vendor;
 
 class LeadController extends Controller
 {
@@ -102,6 +102,22 @@ class LeadController extends Controller
     
             if ($transaction) {
                 Lead::where('id', $request->lead_id)->update(['status' => Lead::SUCCESS]);
+                
+                $dataEmail = [
+                    'customer_name' => $transaction->lead->customer_name,
+                    'email' => $this->hideEMail($transaction->lead->email),
+                    'no_telepon' => $this->hidePhoneNumber($transaction->lead->no_telepon),
+                    'transaction_date' => $this->convertDateView($transaction->transaction_date),
+                    'amount' => $this->currencyView($transaction->amount),
+                    'commission' => $this->currencyView($transaction->commission)
+                ];
+
+                $affiliateEmail = $transaction->lead->user->email;
+
+                Mail::send('admin.transaction._email', $dataEmail, function($message) use ($affiliateEmail) {
+                    $message->to($affiliateEmail)->subject('Affiliate Transaction Success');
+                });
+
                 return $this->sendResponse("Lead Processed Successfully");
             } else {
                 return $this->sendResponse("Lead Processed Fail", "", 221);

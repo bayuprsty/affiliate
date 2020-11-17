@@ -101,26 +101,32 @@
                         name: 'DT_RowIndex',
                     },  
                     {
+                        title: 'Username Aff',
                         data: 'username',
                         name: 'username'
                     },
                     {
+                        title: 'Balance',
                         data: 'balance',
                         name: 'balance'
                     },
                     {
+                        title: 'Commission',
                         data: 'commission',
                         name: 'commission'
                     },
                     {
+                        title: 'Click',
                         data: 'click',
                         name: 'click'
                     },
                     {
+                        title: 'Signup',
                         data: 'signup',
                         name: 'signup'
                     },
                     {
+                        title: 'Conversion',
                         data: 'conversion',
                         name: 'conversion'
                     },
@@ -155,26 +161,32 @@
                         name: 'DT_RowIndex',
                     },  
                     {
+                        title: 'Username',
                         data: 'username',
                         name: 'username'
                     },
                     {
+                        title: 'Vendor',
                         data: 'vendor_name',
                         name: 'vendor_name'
                     },
                     {
+                        title: 'Commission',
                         data: 'commission',
                         name: 'commission'
                     },
                     {
+                        title: 'Click',
                         data: 'click',
                         name: 'click'
                     },
                     {
+                        title: 'Signup',
                         data: 'signup',
                         name: 'signup'
                     },
                     {
+                        title: 'Conversion',
                         data: 'conversion',
                         name: 'conversion'
                     },

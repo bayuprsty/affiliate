@@ -1,13 +1,13 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Laravel\Passport\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
-use App\Gender;
+use App\Models\Gender;
 
 class User extends Authenticatable
 {
@@ -34,6 +34,7 @@ class User extends Authenticatable
         'nomor_rekening',
         'avatar',
         'join_date',
+        'code_verify',
     ];
 
     /**

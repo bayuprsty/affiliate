@@ -75,6 +75,8 @@
 @section('js')
 <script>
     $(document).ready(function() {
+        var transactionFieldset = document.getElementById('transactionFieldset');
+
         var transactionList = $('#transaction_list').DataTable({
             processing: true,
             serverside: true,
@@ -230,13 +232,24 @@
                 method: "POST",
                 datatype: "JSON",
                 data: $('#transactionCreateForm').serialize(),
+                beforeSend: function () {
+                    $(transactionFieldset).attr('disabled', true);
+                    $('#loader').show();
+                },
                 success: function(res) {
                     if (res.code == 200) {
                         $('#modal-create-transaction').modal('hide');
                         $.notify(res.message, "success");
+                        
+                        $(transactionFieldset).attr('disabled', false);
+                        $('#loader').hide();
+                        
                         transactionList.ajax.reload();
                     } else {
                         $.notify(res.message, "error");
+
+                        $(transactionFieldset).attr('disabled', false);
+                        $('#loader').hide();
                     }
                 }
             })

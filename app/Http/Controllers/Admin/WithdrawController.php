@@ -7,10 +7,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 
-use App\User;
-use App\Withdrawal;
-use App\WithdrawalPayout;
-use App\Notification;
+use App\Models\User;
+use App\Models\Withdrawal;
+use App\Models\WithdrawalPayout;
+use App\Models\Notification;
 
 class WithdrawController extends Controller
 {

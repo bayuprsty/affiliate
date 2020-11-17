@@ -1,10 +1,10 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Media;
-use App\Vendor;
+use App\Models\Media;
+use App\Models\Vendor;
 
 class Click extends Model
 {

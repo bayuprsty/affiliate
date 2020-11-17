@@ -15,6 +15,7 @@ class AddEmailConfirmedToUsersTable extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->boolean('email_confirmed')->default(false)->after('email');
+            $table->string('code_verify')->nullable()->after('email_verified_at');
         });
     }
 

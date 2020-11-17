@@ -7,8 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Image;
 
-use App\User;
-use App\Gender;
+use App\Models\User;
+use App\Models\Gender;
 
 class UserController extends Controller
 {

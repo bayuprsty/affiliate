@@ -8,15 +8,15 @@ use Carbon\Carbon;
 use Mail;
 use PDF;
 
-use App\Lead;
-use App\Payout;
-use App\ServiceCommission;
-use App\Transaction;
-use App\User;
-use App\Withdrawal;
-use App\WithdrawalStatus;
-use App\Click;
-use App\Notification;
+use App\Models\Lead;
+use App\Models\Payout;
+use App\Models\ServiceCommission;
+use App\Models\Transaction;
+use App\Models\User;
+use App\Models\Withdrawal;
+use App\Models\WithdrawalStatus;
+use App\Models\Click;
+use App\Models\Notification;
 
 class AffiliateController extends Controller
 {
@@ -31,7 +31,7 @@ class AffiliateController extends Controller
 
         $balance = $commission - $withdrawalApproved;
         
-        $lead = Lead::where('user_id', $userId)->count();
+        $lead = Lead::where('user_id', $userId)->whereNotNull('email')->count();
         $click = Click::where('user_id', $userId)->sum('click');
         $conversion = $click > 0 ? round($lead / $click * 100, 2) : 0;
         $transaction = Transaction::leftJoin('leads', 'leads.id', '=', 'transactions.lead_id')->where('leads.user_id', $userId)->count();

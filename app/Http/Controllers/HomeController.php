@@ -4,14 +4,14 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Gate;
-use App\Click;
+use App\Models\Click;
 
-use App\Lead;
-use App\Transaction;
-use App\Vendor;
-use App\User;
-use App\Withdrawal;
-use App\WithdrawalPayout;
+use App\Models\Lead;
+use App\Models\Transaction;
+use App\Models\Vendor;
+use App\Models\User;
+use App\Models\Withdrawal;
+use App\Models\WithdrawalPayout;
 
 class HomeController extends Controller
 {
@@ -39,7 +39,7 @@ class HomeController extends Controller
         $commission = Transaction::all()->sum('commission');
         $lead = Lead::all()->count();
         $click = Click::all()->sum('click');
-        $conversion = round($lead / $click * 100, 2);
+        $conversion = $click > 0 ? round($lead / $click * 100, 2) : 0;
 
         $withdrawal['count_request'] = Withdrawal::all()->count();
         $withdrawal['request_amount'] = Withdrawal::all()->sum('total');

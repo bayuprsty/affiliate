@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
-use App\CommissionType;
+use App\Models\CommissionType;
 
 class CommissionTypeTableSeeder extends Seeder
 {

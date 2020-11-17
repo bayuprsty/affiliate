@@ -10,10 +10,10 @@ use PDF;
 use Validator;
 use Mail;
 
-use App\Transaction;
-use App\Vendor;
-use App\Lead;
-use App\ServiceCommission;
+use App\Models\Transaction;
+use App\Models\Vendor;
+use App\Models\Lead;
+use App\Models\ServiceCommission;
 
 class TransactionController extends Controller
 {
@@ -89,8 +89,8 @@ class TransactionController extends Controller
                     if ($transactionCreated) {
                         $data = [
                             'customer_name' => $transactionCreated->lead->customer_name,
-                            'email' => $transactionCreated->lead->email,
-                            'no_telepon' => $transactionCreated->lead->no_telepon,
+                            'email' => $this->hideEmail($transactionCreated->lead->email),
+                            'no_telepon' => $this->hidePhoneNumber($transactionCreated->lead->no_telepon),
                             'transaction_date' => $this->convertDateView($transactionCreated->transaction_date),
                             'amount' => $this->currencyView($transactionCreated->amount),
                             'commission' => $this->currencyView($transactionCreated->commission)

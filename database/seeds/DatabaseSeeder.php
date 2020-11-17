@@ -17,7 +17,6 @@ class DatabaseSeeder extends Seeder
         $this->call(MediaSeeder::class);
         $this->call(WithdrawalStatusSeeder::class);
         $this->call(GenderTableSeeder::class);
-        $this->call(DummyLeadTableSeeder::class);
-        $this->call(DummyClickSeeder::class);
+        $this->call(minimumPayoutSeeder::class);
     }
 }

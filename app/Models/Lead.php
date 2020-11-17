@@ -1,10 +1,10 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use App\User;
-use App\Vendor;
+use App\Models\User;
+use App\Models\Vendor;
 
 class Lead extends Model
 {

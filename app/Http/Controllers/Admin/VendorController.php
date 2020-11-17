@@ -5,8 +5,8 @@ namespace App\Http\Controllers\admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-use App\Vendor;
-use App\Lead;
+use App\Models\Vendor;
+use App\Models\Lead;
 
 use DataTables;
 

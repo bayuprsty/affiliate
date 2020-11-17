@@ -14,7 +14,7 @@ use Illuminate\Http\Request;
 */
 Route::post('/login', 'Api\ApiController@login');
 
-Route::group(['middleware' => 'auth:api'], function() {
+Route::group(['middleware' => 'auth.api'], function() {
     Route::post('/setLeadData', 'Api\ApiController@setDataLead');
     Route::post('/setTransactionData', 'Api\ApiController@setDataTransaction');
 });

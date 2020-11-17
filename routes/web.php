@@ -21,10 +21,10 @@ Route::get('/register', 'AuthController@showRegisterForm')->name('register');
 Route::post('/register_user', 'AuthController@register')->name('auth.register');
 Route::post('/logout', 'AuthController@logout')->name('logout');
 
-Route::get('/verify/{id}', 'AuthController@verifyPage')->name('verify'); // page seteleah register, pemberitahuan untuk konfirmasi email
+Route::get('/verify', 'AuthController@verifyPage')->name('verify'); // page seteleah register, pemberitahuan untuk konfirmasi email
 Route::post('/resend', 'AuthController@resendConfirmation')->name('verification.resend');
 
-Route::get('/confirmation_success/{id}', 'AuthController@confirmationSuccess')->name('auth.confirmation_success');
+Route::get('/confirmation_success', 'AuthController@confirmationSuccess')->name('auth.confirmation_success');
 Route::post('/confirmation', 'AuthController@setConfirmation')->name('auth.confirmation'); // update email_confirmed and verified at in users table
 
 Route::group(['middleware' => 'auth'], function() {

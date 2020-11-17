@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
-use App\Vendor;
+use App\Models\Vendor;
 
 class VendorTableSeeder extends Seeder
 {
@@ -24,7 +24,6 @@ class VendorTableSeeder extends Seeder
             'kabupaten_kota' => 'Surabaya',
             'kecamatan' => 'Sukolilo',
             'kodepos' => '60119',
-            'nomor_rekening' => '141093875623'
         ]);
 
         Vendor::create([
@@ -39,7 +38,6 @@ class VendorTableSeeder extends Seeder
             'kabupaten_kota' => 'Surabaya',
             'kecamatan' => 'Sukolilo',
             'kodepos' => '60119',
-            'nomor_rekening' => '141092187651'
         ]);
     }
 }

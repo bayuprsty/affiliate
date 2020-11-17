@@ -1,11 +1,11 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-use App\Withdrawal;
-use App\Lead;
+use App\Models\Withdrawal;
+use App\Models\Lead;
 
 class Notification extends Model
 {

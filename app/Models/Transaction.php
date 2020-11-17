@@ -1,10 +1,10 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Lead;
-use App\ServiceCommission;
+use App\Models\Lead;
+use App\Models\ServiceCommission;
 
 class Transaction extends Model
 {

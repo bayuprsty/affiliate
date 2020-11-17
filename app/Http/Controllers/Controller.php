@@ -56,4 +56,16 @@ class Controller extends BaseController
             'code' => $code
         ]);
     }
+
+    public function hidePhoneNumber($phone) {
+        $hideNumber = str_repeat("*", strlen($phone)-4) . substr($phone, -4);
+
+        return $hideNumber;
+    }
+
+    public function hideEmail($email) {
+        $hideMail = preg_replace("/(?!^).(?=[^@]+@)/", "*", $email);
+
+        return $hideMail;
+    }
 }

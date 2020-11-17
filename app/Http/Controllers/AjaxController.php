@@ -7,13 +7,13 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 
-use App\ServiceCommission;
-use App\Notification;
-use App\WithdrawalStatus;
+use App\Models\ServiceCommission;
+use App\Models\Notification;
+use App\Models\WithdrawalStatus;
 
-use App\Click;
-use App\User;
-use App\Lead;
+use App\Models\Click;
+use App\Models\User;
+use App\Models\Lead;
 
 class AjaxController extends Controller
 {
@@ -193,7 +193,7 @@ class AjaxController extends Controller
                         if (count($leadByIp) > 0) {
                             DB::commit();
                             $dataOldLead = $leadByIp[0];
-                            return response()->json(['url' => $dataOldLead->vendor->link.'/?id='.$dataOldLead->vendor_id.'.'.$dataOldLead->id]);
+                            return response()->json(['url' => $dataOldLead->vendor->link.'/?leadid='.$dataOldLead->id]);
                         }
     
                         $dataLead = [
@@ -206,7 +206,7 @@ class AjaxController extends Controller
     
                         if ($success) {
                             DB::commit();
-                            return response()->json(['url' => $dataClick->vendor->link.'/?id='.$success->vendor_id.'.'.$success->id]);
+                            return response()->json(['url' => $dataClick->vendor->link.'/?leadid='.$success->id]);
                         }
                     }
                 } else {
@@ -231,7 +231,7 @@ class AjaxController extends Controller
     
                         if ($leadSuccess) {
                             DB::commit();
-                            return response()->json(['url' => $clickSuccess->vendor->link.'/?id='.$leadSuccess->vendor_id.'.'.$leadSuccess->id]);
+                            return response()->json(['url' => $clickSuccess->vendor->link.'/?leadid='.$leadSuccess->id]);
                         }
                     }
                 }

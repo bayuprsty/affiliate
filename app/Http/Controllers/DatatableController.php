@@ -8,17 +8,17 @@ use Illuminate\Support\Facades\DB;
 use DataTables;
 use URL;
 
-use App\Transaction;
-use App\Lead;
-use App\Vendor;
-use App\Withdrawal;
-use App\WithdrawalStatus;
-use App\ServiceCommission;
-use App\Payout;
+use App\Models\Transaction;
+use App\Models\Lead;
+use App\Models\Vendor;
+use App\Models\Withdrawal;
+use App\Models\WithdrawalStatus;
+use App\Models\ServiceCommission;
+use App\Models\Payout;
 
-use App\User;
-use App\Click;
-use App\Media;
+use App\Models\User;
+use App\Models\Click;
+use App\Models\Media;
 
 class DatatableController extends Controller
 {
@@ -112,12 +112,18 @@ class DatatableController extends Controller
                 }
             }
 
-            return DataTables::of($rows)
+            if (isset($rows)) {
+                return DataTables::of($rows)
                         ->addIndexColumn()
                         ->editColumn('conversion', function($row){
                             return $this->percentageView($row['conversion']);
                         })
                         ->make(true);
+            } else {
+                return DataTables::of($user)
+                        ->addIndexColumn()
+                        ->make(true);
+            }
         }
     }
 
@@ -233,7 +239,8 @@ class DatatableController extends Controller
                 }
             }
 
-            return Datatables::of($result)
+            if (isset($result)) {
+                return Datatables::of($result)
                         ->addIndexColumn()
                         ->editColumn('username', function ($row) {
                             return '<a href="'.route('user.detailUser', $row['user_id']).'">'.$row['username'].'</a>';
@@ -255,6 +262,11 @@ class DatatableController extends Controller
                         })
                         ->rawColumns(['username', 'action'])
                         ->make(true);
+            } else {
+                return Datatables::of($dataLead)
+                        ->addIndexColumn()
+                        ->make(true);
+            }
         }
     }
 
@@ -742,7 +754,7 @@ class DatatableController extends Controller
 
     public function leadAffiliate(Request $request) {
         if (request()->ajax()) {
-            $lead = Lead::where('user_id', Auth::id())->latest();
+            $lead = Lead::where('user_id', Auth::id())->whereNotNull('email')->latest();
             if ($request->status !== 'all') {
                 if ($request->status == Lead::ON_PROCESS) {
                     $lead->where('status', Lead::ON_PROCESS);

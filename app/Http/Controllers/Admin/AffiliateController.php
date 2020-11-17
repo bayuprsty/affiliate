@@ -7,12 +7,12 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
-use App\Transaction;
-use App\Click;
-use App\Lead;
-use App\User;
-use App\Withdrawal;
-use App\WithdrawalStatus;
+use App\Models\Transaction;
+use App\Models\Click;
+use App\Models\Lead;
+use App\Models\User;
+use App\Models\Withdrawal;
+use App\Models\WithdrawalStatus;
 
 class AffiliateController extends Controller
 {

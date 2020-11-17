@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
-use App\Gender;
+use App\Models\Gender;
 
 class GenderTableSeeder extends Seeder
 {
@@ -18,10 +18,6 @@ class GenderTableSeeder extends Seeder
 
         Gender::create([
             'name' => 'Perempuan',
-        ]);
-
-        Gender::create([
-            'name' => 'Lainnya'
         ]);
     }
 }
