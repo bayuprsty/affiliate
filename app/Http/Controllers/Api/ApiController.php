@@ -100,7 +100,16 @@ class ApiController extends Controller
             $updated = $dataLead->update($data);
 
             if ($updated) {
-                return ApiResponse::send('Lead Created', $updated);
+                $responseUpdate = [
+                    'lead_id' => $request->lead_id,
+                    'customer_name' => $request->customer_name,
+                    'email' => $request->email,
+                    'no_telepon' => $request->no_telepon,
+                    'date' => $request->date,
+                    'status' => 'ON PROCESS',
+                ];
+
+                return ApiResponse::send('Lead Created', $responseUpdate);
             }
         }
     }
@@ -134,11 +143,11 @@ class ApiController extends Controller
                 $data = [
                     'lead_id' => $lead[0]->id,
                     'service_commission_id' => $request->service_commission_id,
-                    'transaction_date' => date('m-d-Y', strtotime($request->transaction_date)),
+                    'transaction_date' => Carbon::parse($request->transaction_date)->format('Y-m-d'),
                     'amount' => $request->amount,
                     'commission' => !empty($request->commission) ? $request->commission : Transaction::getCommissionValue($request->service_commission_id, $request->amount),
                 ];
-    
+
                 $transactionCreated = Transaction::create($data);
     
                 if ($transactionCreated) {
