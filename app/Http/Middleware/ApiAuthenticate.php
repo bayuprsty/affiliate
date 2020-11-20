@@ -2,11 +2,13 @@
 
 namespace App\Http\Middleware;
 use Illuminate\Support\Facades\Auth;
+use Hash;
 
 use App\Helpers\ApiResponse;
 
 use Closure;
-use App\Models\OAuth;
+use App\Models\Lead;
+use App\Models\Vendor;
 
 class ApiAuthenticate
 {
@@ -19,28 +21,31 @@ class ApiAuthenticate
      */
     public function handle($request, Closure $next)
     {
-        // $accessToken = $request->bearerToken();
+        $secret_id = $request->header('SECRET-ID');
         $token = $request->header('X-TOKEN-ID');
-
-        // if (is_null($accessToken)) {
-        //     return ApiResponse::send("Unauthorized. Please Login first", [], 401);
-        // }
         
         if (is_null($token)) {
-            return ApiResponse::send("Unauthorized. Please Login First", [], 401);
+            return ApiResponse::send("Unauthorized. Please Login First", [], 500);
         }
 
-        $dataToken = OAuth::where('id', $token)->first();
+        $dataVendor = Vendor::where('secret_id', $secret_id)->first();
 
-        if (is_null($dataToken)) {
-            return ApiResponse::send("Token Invalid. Please re-login", [], 500);
+        if (is_null($dataVendor)) {
+            return ApiResponse::send('Not Allowed.', [], 401);
         }
 
-        if ((!is_null($dataToken) && (time() - strtotime($dataToken->expires_at) > 0)) || $dataToken->revoked == 1) {
-            $dataToken->update(['revoked' => 1]);
-            return ApiResponse::send("Token Invalid. Please re-login", [], 500);
+        if (is_null($dataVendor->api_token)) {
+            return ApiResponse::send("Token Invalid.", [], 500);
         }
 
-        return $next($request);
+        if (!is_null($dataVendor->api_token) && Hash::check($token, $dataVendor->api_token)) {
+            if (time() - strtotime($dataVendor->token_expired_at) > 0) {
+                return ApiResponse::send("Token Expired.", [], 500);
+            }
+
+            return $next($request);
+        } else {
+            return ApiResponse::send("Token Invalid.", [], 500);
+        }
     }
 }

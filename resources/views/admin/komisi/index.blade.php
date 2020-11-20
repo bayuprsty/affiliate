@@ -77,6 +77,7 @@
             $('#modal-commission').modal('show');
             $('#commissionForm').trigger('reset');
             $('#button-submit').removeClass().addClass('btn btn-primary btn-xs');
+            $('#button-submit').attr("data-id", "");
             $('#button-submit').html('Simpan');
         });
 

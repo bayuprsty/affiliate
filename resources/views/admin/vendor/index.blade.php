@@ -24,7 +24,7 @@
                                         <th>Link</th>
                                         <th>Email</th>
                                         <th>Alamat</th>
-                                        <th>Nomor Rekening</th>
+                                        <th>Secret ID</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
@@ -70,7 +70,10 @@
                     data: 'alamat',
                     name: 'alamat'
                 },
-                {data: 'nomor_rekening', name: 'nomor_rekening'},
+                {
+                    data: 'secret_id',
+                    name: 'secret_id'
+                },
                 {
                     data: 'action',
                     name: 'action'

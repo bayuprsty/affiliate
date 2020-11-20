@@ -113,6 +113,7 @@ class AuthController extends Controller
 
         if ($user) {
             $data = [
+                'nama_lengkap' => $user->nama_depan.' '.$user->nama_belakang,
                 'link_verify' => route('auth.confirmation_success').'?id='.$user->id.'&code='.$user->code_verify
             ];
             
@@ -147,6 +148,7 @@ class AuthController extends Controller
                 $user = $findUser[0];
 
                 $data = [
+                    'nama_lengkap' => $user->nama_depan.' '.$user->nama_belakang,
                     'link_verify' => route('auth.confirmation_success').'?id='.$user->id.'&code='.$user->code_verify
                 ];
     

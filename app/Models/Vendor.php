@@ -18,6 +18,9 @@ class Vendor extends Model
         'kabupaten_kota',
         'kecamatan',
         'kodepos',
-        'nomor_rekening'
+        'nomor_rekening',
+        'secret_id',
+        'api_token',
+        'token_expired_at'
     ];
 }

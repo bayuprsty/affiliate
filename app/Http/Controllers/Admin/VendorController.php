@@ -4,6 +4,7 @@ namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 use App\Models\Vendor;
 use App\Models\Lead;
@@ -13,8 +14,6 @@ use DataTables;
 class VendorController extends Controller
 {
     public function index () {
-        // $vendor = Vendor::orderBy('created_at', 'DESC')->get();
-
         return view('admin.vendor.index');
     }
 
@@ -40,7 +39,8 @@ class VendorController extends Controller
                 'kabupaten_kota' => $request->kabupaten_kota,
                 'kecamatan' => $request->kecamatan,
                 'kodepos' => $request->kodepos,
-                'nomor_rekening' => $request->nomor_rekening
+                'nomor_rekening' => $request->nomor_rekening,
+                'secret_id' => Str::random(30)
             ];
      
             Vendor::create($data);

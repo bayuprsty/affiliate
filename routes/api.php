@@ -12,7 +12,7 @@ use Illuminate\Http\Request;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-Route::post('/login', 'Api\ApiController@login');
+Route::post('/getAccessToken', 'Api\ApiController@getAccessToken');
 
 Route::group(['middleware' => 'auth.api'], function() {
     Route::post('/setLeadData', 'Api\ApiController@setDataLead');

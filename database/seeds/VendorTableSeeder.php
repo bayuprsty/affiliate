@@ -24,6 +24,7 @@ class VendorTableSeeder extends Seeder
             'kabupaten_kota' => 'Surabaya',
             'kecamatan' => 'Sukolilo',
             'kodepos' => '60119',
+            'secret_id' => Str::random(30),
         ]);
 
         Vendor::create([
@@ -38,6 +39,7 @@ class VendorTableSeeder extends Seeder
             'kabupaten_kota' => 'Surabaya',
             'kecamatan' => 'Sukolilo',
             'kodepos' => '60119',
+            'secret_id' => Str::random(30),
         ]);
     }
 }
