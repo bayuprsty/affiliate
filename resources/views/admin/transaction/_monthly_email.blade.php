@@ -84,21 +84,6 @@
                         <td>{{ $transaction }}</td>
                     </tr>
                     <tr>
-                        <td>No Telepon</td>
-                        <td>:</td>
-                        <td>{{ $no_telepon }}</td>
-                    </tr>
-                    <tr>
-                        <td>Transaction Date</td>
-                        <td>:</td>
-                        <td>{{ $transaction_date }}</td>
-                    </tr>
-                    <tr>
-                        <td>Amount</td>
-                        <td>:</td>
-                        <td>{{ $amount }}</td>
-                    </tr>
-                    <tr>
                         <td>Your Comission</td>
                         <td>:</td>
                         <td> @currency($commission) </td>
@@ -107,18 +92,9 @@
             </div>
             <div class="footer">
                 <div class="footer-container">
-                    <h2>Thank You</h2>
+                    <h2>Thanks For Your Contribution</h2>
                 </div>
             </div>
         </div>
     </body>
 </html>
-Hello {{ $nama_lengkap }}<br/>
-This is your transaction monthly report on {{ $month }}<br/>
-<br/>
-Total Lead : {{ $lead }}<br/>
-Total Transaction : {{ $transaction }}<br/>
-<br/>
-Your Commission : @currency($commission)<br/>
-<br/>
-Thanks for your Contribution

@@ -7,9 +7,9 @@ use Carbon\Carbon;
 
 use Mail;
 
-use App\User;
-use App\Transaction;
-use App\Lead;
+use App\Models\User;
+use App\Models\Transaction;
+use App\Models\Lead;
 
 class sendEmailTransaction extends Command
 {
