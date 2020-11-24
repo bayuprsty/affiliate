@@ -62,6 +62,10 @@ class ApiController extends Controller
                 if (is_null($vendor)) {
                     return ApiResponse::send('Vendor Tidak Terdaftar', [], 401);
                 }
+
+                if ($vendor->active == false) {
+                    return ApiResponse::send('Vendor tidak aktif', [], 401);
+                }
     
                 $token = Str::random(60);
                 
@@ -112,6 +116,10 @@ class ApiController extends Controller
     
             $dataLead = Lead::findOrfail($request->lead_id);
             $vendor = Vendor::where('secret_id', $request->header('SECRET-ID'))->first();
+
+            if ($vendor->active == false) {
+                return ApiResponse::send('Vendor tidak aktif', [], 401);
+            }
 
             if ($dataLead->vendor_id !== (string) $vendor->id) {
                 return ApiResponse::send('Vendor tidak sesuai dengan data Lead', [], 500);
@@ -170,6 +178,10 @@ class ApiController extends Controller
     
             $lead = Lead::where('email', $request->email)->get();
             $vendor = Vendor::where('secret_id', $request->header('SECRET-ID'))->first();
+
+            if ($vendor->active == false) {
+                return APiResponse::send('Vendor tidak aktif', [], 401);
+            }
 
             if ($lead[0]->vendor_id !== (string) $vendor->id) {
                 return ApiResponse::send('Vendor tidak sesuai dengan data Lead', [], 500);

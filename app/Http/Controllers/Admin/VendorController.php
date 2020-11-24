@@ -86,14 +86,20 @@ class VendorController extends Controller
 
     public function destroy (Request $request) {
         if ($request->ajax()) {
-            if (Lead::where('vendor_id', $request->id)) {
-                return $this->sendResponse('Vendor used in another features', '', 221);
-            } else {
-                $isDeleted = Vendor::find($id)->delete();
-    
-                if ($isDeleted) {
-                    return $this->sendResponse('Vendor Deleted Successfully');
-                }
+            $isUpdated = Vendor::findOrfail($request->id)->update(['active' => false]);
+
+            if ($isUpdated) {
+                return $this->sendResponse('Vendor Deactivated Successfully');
+            }
+        }
+    }
+
+    public function activate (Request $request) {
+        if ($request->ajax()) {
+            $isUpdated = Vendor::findOrfail($request->id)->update(['active' => true]);
+
+            if ($isUpdated) {
+                return $this->sendResponse('Vendor Activated Successfully');
             }
         }
     }

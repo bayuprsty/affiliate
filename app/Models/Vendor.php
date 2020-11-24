@@ -21,6 +21,7 @@ class Vendor extends Model
         'nomor_rekening',
         'secret_id',
         'api_token',
-        'token_expired_at'
+        'token_expired_at',
+        'active',
     ];
 }

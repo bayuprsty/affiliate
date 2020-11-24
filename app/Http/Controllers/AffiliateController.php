@@ -21,7 +21,8 @@ use App\Models\Notification;
 class AffiliateController extends Controller
 {
     public function dashboard () {
-        $userId = Auth::id();
+        $user = Auth::user();
+        $userId = $user->id;
         $minimumPayout = Payout::all();
         $commission = Transaction::leftJoin('leads', 'leads.id', '=', 'transactions.lead_id')->where('leads.user_id', $userId)->sum('transactions.commission');
         $withdrawalApproved = Withdrawal::where('user_id', $userId)
@@ -29,7 +30,7 @@ class AffiliateController extends Controller
                                 ->leftJoin('withdrawal_payouts', 'withdrawal_payouts.withdrawal_id', '=', 'withdrawals.id')
                                 ->sum('withdrawal_payouts.payout');
 
-        $balance = $commission - $withdrawalApproved;
+        $balance = $user->saldo_awal + $commission - $withdrawalApproved;
         
         $lead = Lead::where('user_id', $userId)->whereNotNull('email')->count();
         $click = Click::where('user_id', $userId)->sum('click');
@@ -55,7 +56,8 @@ class AffiliateController extends Controller
     }
 
     public function wallet () {
-        $userId = Auth::id();
+        $user = Auth::user();
+        $userId = $user->id;
         $minimumPayout = Payout::all();
         $commission = Transaction::leftJoin('leads', 'leads.id', '=', 'transactions.lead_id')->where('leads.user_id', $userId)->sum('transactions.commission');
 
@@ -65,7 +67,7 @@ class AffiliateController extends Controller
                                 ->leftJoin('withdrawal_payouts', 'withdrawal_payouts.withdrawal_id', '=', 'withdrawals.id')
                                 ->sum('withdrawal_payouts.payout');
 
-        $balance = $commission - $withdrawalApproved;
+        $balance = $user->saldo_awal + $commission - $withdrawalApproved;
 
         Notification::where(['user_read' => 0, 'admin_read' => 1])->whereNotNull('withdraw_id')->update(['user_read' => 1]);
 

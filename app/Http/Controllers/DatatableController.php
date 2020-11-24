@@ -28,6 +28,7 @@ class DatatableController extends Controller
             $user = User::select(
                         'users.id as user_id',
                         'users.username as username',
+                        'saldo_awal',
                         DB::raw('SUM(transactions.commission) as commission'),
                         DB::raw('count(leads.id) as signup')
                         // DB::raw('SUM(transactions.commission) - SUM(withdrawals.total) as balance'),
@@ -71,7 +72,7 @@ class DatatableController extends Controller
             foreach ($user as $key => $value) {
                 $withdrawRequest = isset($withdrawals[$value->user_id]) ? $withdrawals[$value->user_id]['total'] : 0;
                 $allCommission = isset($commission[$value->user_id]) ? $commission[$value->user_id]['total_commission'] : 0;
-                $balance = $allCommission - $withdrawRequest;
+                $balance = $value->saldo_awal + $allCommission - $withdrawRequest;
 
                 $conversion = isset($click[$value->user_id]) ? round($value->signup / $click[$value->user_id]['click'] * 100, 2) : 0;
 
@@ -132,6 +133,7 @@ class DatatableController extends Controller
             $user = User::select(
                             'users.id as user_id',
                             'users.username as username',
+                            'saldo_awal',
                             DB::raw('SUM(transactions.commission) as commission'),
                             DB::raw('count(leads.id) as signup')
                             // DB::raw('SUM(transactions.commission) - SUM(withdrawals.total) as balance'),
@@ -160,11 +162,11 @@ class DatatableController extends Controller
                         })
                         ->addColumn('balance', function($row) use ($withdrawals){
                             if (isset($withdrawals[$row->user_id])) {
-                                $balance = $row->commission - $withdrawals[$row->user_id]['total'];
+                                $balance = $row->saldo_awal + $row->commission - $withdrawals[$row->user_id]['total'];
                                 return $this->currencyView($balance);
                             }
 
-                            return $this->currencyView($row->commission);
+                            return $this->currencyView($row->saldo_awal + $row->commission);
                         })
                         ->editColumn('commission', function($row) {
                             return $this->currencyView($row->commission);
@@ -467,12 +469,14 @@ class DatatableController extends Controller
                             return $alamat;
                         })
                         ->addColumn('action', function($row) {
-                            $btn = '<div class="form-inline row">
-                                        <center>
-                                            <a href="'.route("vendor.edit", $row->id).'" class="btn btn-warning btn-sm" title="Edit"><i class="fa fa-pencil-alt"></i></a>
-                                            <button id="button-delete" class="btn btn-danger btn-sm" title="Delete" data-id="'. $row->id .'"><i class="fas fa-times"></i></button>
-                                        </center>
-                                    </div>';
+                            if ($row->active == false) {
+                                $btn = '<button id="button-activate" class="btn btn-primary btn-sm btn-circle" title="Activate" data-id="'. $row->id .'"><i class="fas fa-check"></i></button>';
+                            } else {
+                                $btn = '<div class="form-inline row text-center">
+                                            <a href="'.route("vendor.edit", $row->id).'" class="btn btn-warning btn-sm btn-circle" title="Edit"><i class="fa fa-pencil-alt"></i></a>&nbsp;
+                                            <button id="button-delete" class="btn btn-danger btn-sm btn-circle" title="Deactivate" data-id="'. $row->id .'"><i class="fas fa-times"></i></button>
+                                        </div>';
+                            }
 
                             return $btn;
                         })
@@ -610,7 +614,7 @@ class DatatableController extends Controller
     ################################################ USER ####################################################
     public function vendorAffiliate(Request $request) {
         if ($request->ajax()) {
-            $serviceCommission = ServiceCommission::all();
+            $serviceCommission = ServiceCommission::leftJoin('vendors', 'vendors.id', '=', 'service_commissions.vendor_id')->where('vendors.active', true)->get();
             $userId = Auth::id();
 
             $media = Media::get()->keyBy('name');

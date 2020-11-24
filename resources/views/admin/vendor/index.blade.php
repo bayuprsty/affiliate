@@ -15,7 +15,7 @@
                     </div>
                     <div class="card-body">
                         <div class="col-md-12">
-                            <table class="table table-hover" id="vendor_list" style="font-size: 14px;">
+                            <table class="table table-hover" id="vendor_list" style="font-size: 13px;">
                                 <thead>
                                     <tr>
                                         <th>#</th>
@@ -82,22 +82,51 @@
         } );
 
         $('body').on('click', '#button-delete', function(e) {
-            var id = $(this).attr('data-id');
+            var conf = confirm("Are you sure deactivate this vendor ?");
 
-            $.ajax({
-                url: "{{ route('vendor.destroy') }}",
-                method: "POST",
-                datatype: "JSON",
-                data: {id: id},
-                success: function(res) {
-                    if (res.code == 200) {
-                        $.notify(res.message, "success");
-                        vendorList.ajax.reload();
-                    } else {
-                        $.notify(res.message, "error");
+            if (conf) {
+                var id = $(this).attr('data-id');
+
+                $.ajax({
+                    url: "{{ route('vendor.destroy') }}",
+                    method: "POST",
+                    datatype: "JSON",
+                    data: {id: id},
+                    success: function(res) {
+                        if (res.code == 200) {
+                            $.notify(res.message, "success");
+                            vendorList.ajax.reload();
+                        } else {
+                            $.notify(res.message, "error");
+                        }
                     }
-                }
-            })
+                })
+            }
+        })
+
+        $('body').on('click', '#button-activate', function(e) {
+            e.preventDefault();
+
+            var conf = confirm('Do you want activate this vendor ?');
+
+            if (conf) {
+                var id = $(this).attr("data-id");
+
+                $.ajax({
+                    url: "{{ route('vendor.activate') }}",
+                    method: "POST",
+                    datatype: "JSON",
+                    data: {id: id},
+                    success: function (res) {
+                        if (res.code == 200) {
+                            $.notify(res.message, "success");
+                            vendorList.ajax.reload();
+                        } else {
+                            $.notify(res.message, "error");
+                        }
+                    }
+                })
+            }
         })
     })
 </script>

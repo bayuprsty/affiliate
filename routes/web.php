@@ -61,6 +61,7 @@ Route::group(['middleware' => 'auth'], function() {
             Route::get('/edit/{id}', 'Admin\VendorController@edit')->name('vendor.edit');
             Route::post('/update', 'Admin\VendorController@update')->name('vendor.update');
             Route::post('/delete', 'Admin\VendorController@destroy')->name('vendor.destroy');
+            Route::post('/activate', 'Admin\VendorController@activate')->name('vendor.activate');
         });
 
         Route::group(['prefix' => 'transaction'], function() {

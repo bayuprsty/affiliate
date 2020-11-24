@@ -107,6 +107,7 @@ class AuthController extends Controller
             'join_date'     => Carbon::NOW(),
             'avatar'        => $filename,
             'code_verify'   => substr(str_shuffle($permitted_chars), 0, 30),
+            'saldo_awal'    => 50000,
         ];
 
         $user = User::create($data);
@@ -162,17 +163,18 @@ class AuthController extends Controller
     }
 
     public function confirmationSuccess(Request $request) {
-        $user = User::where(['id' => $request->id, 'code_verify' => $request->code])->get();
+        $user = User::where(['id' => $request->id, 'code_verify' => $request->code])->first();
 
         $dataUpdate = [
             'email_confirmed' => 1,
             'email_verified_at' => Carbon::NOW(),
         ];
 
-        $verified = $user[0]->update($dataUpdate);
+        $verified = $user->update($dataUpdate);
+        $nama_lengkap = $user->nama_depan.' '.$user->nama_belakang;
 
         if ($verified) {
-            return redirect('login')->with('verified', 'Thanks For Verify Your Email. You can Login NOW');
+            return view('auth.verify_success', compact('nama_lengkap'));
         }
     }
 
