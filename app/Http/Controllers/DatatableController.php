@@ -134,14 +134,16 @@ class DatatableController extends Controller
                             'users.id as user_id',
                             'users.username as username',
                             'saldo_awal',
-                            DB::raw('SUM(transactions.commission) as commission'),
-                            DB::raw('count(leads.id) as signup')
-                            // DB::raw('SUM(transactions.commission) - SUM(withdrawals.total) as balance'),
                         )
-                        ->leftJoin('leads', 'users.id', '=', 'leads.user_id')
-                        ->leftJoin('transactions', 'transactions.lead_id', '=', 'leads.id')
-                        ->where('users.role', 'affiliator')
-                        ->groupBy('leads.user_id')->latest('users.id')->get();
+                        ->where('role', 'affiliator')
+                        ->latest('id')->get();
+            
+            $lead = Lead::select(
+                                DB::raw('SUM(transactions.commission) as commission'),
+                                DB::raw('count(leads.id) as signup')
+                            )
+                            ->leftJoin('transactions', 'transactions.lead_id', '=', 'leads.id')
+                            ->groupBy('leads.user_id')->get()->keyBy('leads.user_id')->toArray();
             
             $withdrawals = Withdrawal::select(
                 'withdrawals.user_id as user_id',
@@ -160,23 +162,29 @@ class DatatableController extends Controller
                         ->editColumn('username', function($row) {
                             return '<a href="'.route('user.detailUser', $row->user_id).'">'.$row->username.'</a>';
                         })
-                        ->addColumn('balance', function($row) use ($withdrawals){
+                        ->addColumn('balance', function($row) use ($withdrawals, $lead){
+                            $commission = isset($lead[$row->id]['commission']) ? $lead[$row->id]['commission'] : 0;
                             if (isset($withdrawals[$row->user_id])) {
-                                $balance = $row->saldo_awal + $row->commission - $withdrawals[$row->user_id]['total'];
+                                $balance = $row->saldo_awal + $commission - $withdrawals[$row->user_id]['total'];
                                 return $this->currencyView($balance);
                             }
 
-                            return $this->currencyView($row->saldo_awal + $row->commission);
+                            return $this->currencyView($row->saldo_awal + $commission);
                         })
-                        ->editColumn('commission', function($row) {
-                            return $this->currencyView($row->commission);
+                        ->editColumn('commission', function($row) use ($lead) {
+                            $commission = isset($lead[$row->id]['commission']) ? $lead[$row->id]['commission'] : 0;
+                            return $this->currencyView($commission);
                         })
                         ->addColumn('click', function($row) use ($click){
                             return isset($click[$row->user_id]) ? $click[$row->user_id]['click'] : 0;
                         })
-                        ->addColumn('conversion', function($row) use ($click){
+                        ->addColumn('signup', function($row) use ($lead) {
+                            return isset($lead[$row->id]['signup']) ? $lead[$row->id]['signup'] : 0;
+                        })
+                        ->addColumn('conversion', function($row) use ($click, $lead){
+                            $signup = isset($lead[$row->id]['signup']) ? $lead[$row->id]['signup'] : 0;
                             $click = isset($click[$row->user_id]) ? $click[$row->user_id]['click'] : 0;
-                            return $click > 0 ? round($row->signup / $click * 100, 2) : 0 .'%';
+                            return $click > 0 ? round($signup / $click * 100, 2) : 0 .'%';
                         })
                         ->addColumn('action', function($row) {
                             $btn = '<div class="form-inline row">
