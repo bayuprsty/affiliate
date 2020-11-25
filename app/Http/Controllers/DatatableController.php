@@ -133,7 +133,7 @@ class DatatableController extends Controller
             $user = User::select(
                             'users.id as user_id',
                             'users.username as username',
-                            'saldo_awal',
+                            'saldo_awal'
                         )
                         ->where('role', 'affiliator')
                         ->latest('id')->get();
@@ -164,7 +164,7 @@ class DatatableController extends Controller
                             return '<a href="'.route('user.detailUser', $row->user_id).'">'.$row->username.'</a>';
                         })
                         ->addColumn('balance', function($row) use ($withdrawals, $lead){
-                            $commission = isset($lead[$row->id]['commission']) ? $lead[$row->id]['commission'] : 0;
+                            $commission = isset($lead[$row->id]) ? $lead[$row->id]['commission'] : 0;
                             if (isset($withdrawals[$row->user_id])) {
                                 $balance = $row->saldo_awal + $commission - $withdrawals[$row->user_id]['total'];
                                 return $this->currencyView($balance);
@@ -173,17 +173,17 @@ class DatatableController extends Controller
                             return $this->currencyView($row->saldo_awal + $commission);
                         })
                         ->editColumn('commission', function($row) use ($lead) {
-                            $commission = isset($lead[$row->id]['commission']) ? $lead[$row->id]['commission'] : 0;
+                            $commission = isset($lead[$row->id]) ? $lead[$row->id]['commission'] : 0;
                             return $this->currencyView($commission);
                         })
                         ->addColumn('click', function($row) use ($click){
                             return isset($click[$row->user_id]) ? $click[$row->user_id]['click'] : 0;
                         })
                         ->addColumn('signup', function($row) use ($lead) {
-                            return isset($lead[$row->id]['signup']) ? $lead[$row->id]['signup'] : 0;
+                            return isset($lead[$row->id]) ? $lead[$row->id]['signup'] : 0;
                         })
                         ->addColumn('conversion', function($row) use ($click, $lead){
-                            $signup = isset($lead[$row->id]['signup']) ? $lead[$row->id]['signup'] : 0;
+                            $signup = isset($lead[$row->id]) ? $lead[$row->id]['signup'] : 0;
                             $click = isset($click[$row->user_id]) ? $click[$row->user_id]['click'] : 0;
 
                             $conversion = $click > 0 ? round($signup / $click * 100, 2) : 0;
