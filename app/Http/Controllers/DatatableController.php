@@ -139,11 +139,12 @@ class DatatableController extends Controller
                         ->latest('id')->get();
             
             $lead = Lead::select(
+                                'leads.user_id as user_id',
                                 DB::raw('SUM(transactions.commission) as commission'),
                                 DB::raw('count(leads.id) as signup')
                             )
                             ->leftJoin('transactions', 'transactions.lead_id', '=', 'leads.id')
-                            ->groupBy('leads.user_id')->get()->keyBy('leads.user_id')->toArray();
+                            ->groupBy('user_id')->get()->keyBy('user_id')->toArray();
             
             $withdrawals = Withdrawal::select(
                 'withdrawals.user_id as user_id',
@@ -184,7 +185,9 @@ class DatatableController extends Controller
                         ->addColumn('conversion', function($row) use ($click, $lead){
                             $signup = isset($lead[$row->id]['signup']) ? $lead[$row->id]['signup'] : 0;
                             $click = isset($click[$row->user_id]) ? $click[$row->user_id]['click'] : 0;
-                            return $click > 0 ? round($signup / $click * 100, 2) : 0 .'%';
+
+                            $conversion = $click > 0 ? round($signup / $click * 100, 2) : 0;
+                            return $conversion.'%';
                         })
                         ->addColumn('action', function($row) {
                             $btn = '<div class="form-inline row">
