@@ -21,6 +21,11 @@ Route::get('/register', 'AuthController@showRegisterForm')->name('register');
 Route::post('/register_user', 'AuthController@register')->name('auth.register');
 Route::post('/logout', 'AuthController@logout')->name('logout');
 
+Route::get('/forgot_password', 'AuthController@forgot')->name('forgot.password');
+Route::post('/send_forgot', 'AuthController@sendForgotPassword')->name('forgot.sendEmail');
+Route::get('/reset_password', 'AuthController@resetPassword')->name('reset.password');
+Route::post('/reset_store', 'AuthController@resetSave')->name('reset.save');
+
 Route::get('/verify', 'AuthController@verifyPage')->name('verify'); // page seteleah register, pemberitahuan untuk konfirmasi email
 Route::post('/resend', 'AuthController@resendConfirmation')->name('verification.resend');
 
@@ -42,6 +47,9 @@ Route::group(['middleware' => 'auth'], function() {
         Route::get('/detail', 'Admin\UserController@detailProfile')->name('user.detail');
         Route::get('/edit', 'Admin\UserController@editProfile')->name('user.editProfile');
         Route::post('/update', 'Admin\UserController@updateProfile')->name('user.update');
+
+        Route::get('/change_password', 'Admin\UserController@changePassword')->name('user.changePassword');
+        Route::post('/store_password', 'Admin\UserController@storePassword')->name('user.storePassword');
     });
 
     Route::group(['prefix' => 'admin', 'middleware' => 'can:isAdmin'], function () {

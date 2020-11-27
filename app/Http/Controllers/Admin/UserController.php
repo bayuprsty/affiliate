@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Image;
+use Hash;
+use Validator;
 
 use App\Models\User;
 use App\Models\Gender;
@@ -104,6 +106,42 @@ class UserController extends Controller
                 $user->delete();
 
                 return $this->sendResponse('User Affiliate Deleted');
+            }
+        }
+    }
+
+    public function changePassword() {
+        return view('affiliate.password.change');
+    }
+
+    public function storePassword(Request $request) {
+        if ($request->ajax()) {
+            $validator = Validator::make($request->all(), [
+                'password' => 'required|confirmed'
+            ]);
+
+            if ($validator->fails()) {
+                foreach ($validator->errors()->messages() as $value) {
+                    return $this->sendResponse($value[0], '', 401);
+                }
+            }
+
+            $user = Auth::user();
+
+            if (Hash::check($request->old_password, $user->password)) {
+                $data = [
+                    'password' => bcrypt($request->password)
+                ];
+
+                $isUpdated = $user->update($data);
+
+                if ($isUpdated) {
+                    return $this->sendResponse('Change Password Success');
+                } else {
+                    return $this->sendResponse('Change Password Failed', [], 401);
+                }
+            } else {
+                return $this->sendResponse('Password Lama Salah', [], 500);
             }
         }
     }

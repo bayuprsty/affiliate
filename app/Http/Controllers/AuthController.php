@@ -182,4 +182,68 @@ class AuthController extends Controller
         Auth::logout();
         return redirect()->route('login');
     }
+
+    public function forgot() {
+        return view('auth.passwords.confirm');
+    }
+
+    public function sendForgotPassword(Request $request) {
+        if ($request->ajax()) {
+            $user = User::where('email', $request->email)->first();
+            
+            if (is_null($user)) {
+                return $this->sendResponse("Email Not Registered", [], 401);
+            }
+
+            $data = [
+                'nama_lengkap' => $user->nama_depan.' '.$user->nama_belakang,
+                'link_reset' => route('reset.password').'?id='.$user->id.'&code='.$user->code_verify
+            ];
+
+            Mail::send(['html' => 'auth.email.reset'], $data, function($message) use ($user) {
+                $message->to($user->email)->subject('Email Reset Password');
+            });
+
+            return $this->sendResponse('Email Reset Password has been sent. Please Check your email');
+        }
+    }
+
+    public function resetPassword(Request $request) {
+        $id = $request->id;
+        $code_verify = $request->code;
+
+        return view('auth.passwords.reset', compact('id', 'code_verify'));
+    }
+
+    public function resetSave(Request $request) {
+        if ($request->ajax()) {
+            $validator = Validator::make($request->all(), [
+                'password' => 'required|confirmed',
+            ]);
+
+            if ($validator->fails()) {
+                foreach ($validator->errors()->messages() as $value) {
+                    return $this->sendResponse($value[0], '', 401);
+                }
+            }
+
+            $user = User::where(['id' => $request->id, 'code_verify' => $request->code_verify])->first();
+            
+            if (is_null($user)) {
+                return $this->sendResponse('Cannot Reset Password. User not Found', [], 500);
+            }
+
+            $data = [
+                'password' => bcrypt($request->password)
+            ];
+
+            $isUpdated = $user->update($data);
+
+            if ($isUpdated) {
+                return $this->sendResponse('Password Reset Succesfully');
+            } else {
+                return $this->sendResponse('Reset Password Failed');
+            }
+        }
+    }
 }

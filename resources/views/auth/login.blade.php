@@ -62,7 +62,7 @@
                                     <button class="btn btn-dark px-4">Login</button>
                                 </div>
                                 <div class="col-6 text-right">
-                                    <button class="btn btn-link px-0" type="button">Forgot password?</button>
+                                    <a href="{{ route('forgot.password') }}" class="btn btn-link px-0" type="button">Forgot password?</a>
                                 </div>
                             </div>
                         </form>

@@ -25,6 +25,10 @@
             </a>
             <!-- Dropdown - User Information -->
             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
+            <a class="dropdown-item" href="{{ route('user.changePassword') }}">
+                    <i class="fas fa-lock fa-sm fa-fw mr-2 text-gray-400"></i>
+                    Change Password
+                </a>
                 <a class="dropdown-item" href="{{ route('user.detail') }}">
                     <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
                     Profile
