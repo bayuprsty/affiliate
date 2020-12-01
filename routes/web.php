@@ -33,6 +33,7 @@ Route::get('/confirmation_success', 'AuthController@confirmationSuccess')->name(
 Route::post('/confirmation', 'AuthController@setConfirmation')->name('auth.confirmation'); // update email_confirmed and verified at in users table
 
 Route::get('/share/{sharedValue}', 'AffiliateController@shareLink');
+Route::post('/setclick', 'AjaxController@setClick')->name('ajax.setClick');
 
 Route::group(['middleware' => 'auth'], function() {
     Route::get('/all', 'NotificationController@allNotification')->name('all.notification');
@@ -41,7 +42,6 @@ Route::group(['middleware' => 'auth'], function() {
     Route::get('/notifaction', 'AjaxController@getNotification')->name('ajax.notification');
     Route::get('/allnotifaction', 'AjaxController@allNotification')->name('ajax.allNotification');
     Route::get('/usernotifaction', 'AjaxController@userNotification')->name('ajax.userNotification');
-    Route::post('/setclick', 'AjaxController@setClick')->name('ajax.setClick');
 
     Route::group(['prefix' => 'user'], function() {
         Route::get('/detail', 'Admin\UserController@detailProfile')->name('user.detail');
