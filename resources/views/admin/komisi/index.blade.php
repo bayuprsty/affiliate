@@ -18,7 +18,7 @@
                             <table class="table table-hover" id="komisi_list" style="font-size: 14px;">
                                 <thead>
                                     <tr>
-                                        <th>#</th>
+                                        <th>ID</th>
                                         <th>Vendor</th>
                                         <th>Title</th>
                                         <th>Description</th>
@@ -58,8 +58,8 @@
             ],
             columns: [
                 {
-                    data: 'DT_RowIndex',
-                    name: 'DT_RowIndex',
+                    data: 'id',
+                    name: 'id',
                 },  
                 {data: 'vendor_id', name: 'vendor'},
                 {data: 'title', name: 'title'},

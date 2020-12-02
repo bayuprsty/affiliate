@@ -573,7 +573,6 @@ class DatatableController extends Controller
             $komisi = ServiceCommission::latest()->get();
 
             return DataTables::of($komisi)
-                        ->addIndexColumn()
                         ->editColumn('vendor_id', function($row) {
                             return $row->vendor->name;
                         })
