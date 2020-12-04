@@ -624,13 +624,13 @@ class DatatableController extends Controller
     ################################################ USER ####################################################
     public function vendorAffiliate(Request $request) {
         if ($request->ajax()) {
-            $vendorActive = Vendor::where('active', true)->whereNotNull('service_link')->get();
+            $vendorActive = Vendor::where('active', true)->get();
             
             foreach ($vendorActive as $key => $value) {
                 $vendorId[] = $value->id;
             }
 
-            $serviceCommission = ServiceCommission::whereIn('vendor_id', $vendorId)->get();
+            $serviceCommission = ServiceCommission::whereIn('vendor_id', $vendorId)->whereNotNull('service_link')->get();
             $userId = Auth::id();
 
             $media = Media::get()->keyBy('name');
