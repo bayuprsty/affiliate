@@ -167,11 +167,13 @@ class AjaxController extends Controller
         if ($request->ajax()) {
             $value      = explode('.', $request->value);
 
-            $vendor_id  = $value[0];
-            $user_id    = $value[1];
-            $media_id   = $value[2];
+            $service_id  = $value[0];
+            $user_id     = $value[1];
+            $media_id    = $value[2];
 
-            $click = Click::where(['vendor_id' => $vendor_id, 'user_id' => $user_id, 'media_id' => $media_id])->get();
+            $service = ServiceCommission::where('id', $service_id)->first();
+
+            $click = Click::where(['vendor_id' => $service->vendor_id, 'user_id' => $user_id, 'media_id' => $media_id])->get();
 
             DB::beginTransaction();
 
@@ -188,17 +190,17 @@ class AjaxController extends Controller
                     if ($update) {
                         $ipaddress = $this->getIpAddress();
     
-                        $leadByIp = Lead::where('ip_address', $ipaddress)->get();
+                        $leadByIp = Lead::where('ip_address', $ipaddress)->where('status', '<>', Lead::SUCCESS)->get();
     
                         if (count($leadByIp) > 0) {
                             DB::commit();
                             $dataOldLead = $leadByIp[0];
-                            return response()->json(['url' => $dataOldLead->vendor->link.'/?leadid='.$dataOldLead->id]);
+                            return response()->json(['url' => $service->service_link.'/?leadid='.$dataOldLead->id]);
                         }
     
                         $dataLead = [
                             'user_id'       => $user_id,
-                            'vendor_id'     => $vendor_id,
+                            'vendor_id'     => $service->vendor_id,
                             'ip_address'    => $ipaddress
                         ];
     
@@ -206,13 +208,13 @@ class AjaxController extends Controller
     
                         if ($success) {
                             DB::commit();
-                            return response()->json(['url' => $dataClick->vendor->link.'/?leadid='.$success->id]);
+                            return response()->json(['url' => $service->service_link.'/?leadid='.$success->id]);
                         }
                     }
                 } else {
                     $dataClick = [
                         'user_id' => $user_id,
-                        'vendor_id' => $vendor_id,
+                        'vendor_id' => $service->vendor_id,
                         'media_id' => $media_id,
                         'click' => 1
                     ];
@@ -223,7 +225,7 @@ class AjaxController extends Controller
                         $ipaddress = $this->getIpAddress();
                         $dataLead = [
                             'user_id'       => $user_id,
-                            'vendor_id'     => $vendor_id,
+                            'vendor_id'     => $service->vendor_id,
                             'ip_address'    => $ipaddress,
                         ];
     
@@ -231,7 +233,7 @@ class AjaxController extends Controller
     
                         if ($leadSuccess) {
                             DB::commit();
-                            return response()->json(['url' => $clickSuccess->vendor->link.'/?leadid='.$leadSuccess->id]);
+                            return response()->json(['url' => $service->service_link.'/?leadid='.$leadSuccess->id]);
                         }
                     }
                 }

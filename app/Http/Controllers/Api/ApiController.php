@@ -117,11 +117,15 @@ class ApiController extends Controller
             $dataLead = Lead::findOrfail($request->lead_id);
             $vendor = Vendor::where('secret_id', $request->header('SECRET-ID'))->first();
 
+            if ($dataLead->status == Lead::SUCCESS) {
+                return APiResponse::send('Lead sudah digunakan', [], 401);
+            }
+
             if ($vendor->active == false) {
                 return ApiResponse::send('Vendor tidak aktif', [], 401);
             }
 
-            if ($dataLead->vendor_id !== (string) $vendor->id) {
+            if ((string) $dataLead->vendor_id !== (string) $vendor->id) {
                 return ApiResponse::send('Vendor tidak sesuai dengan data Lead', [], 500);
             }
     
@@ -183,17 +187,21 @@ class ApiController extends Controller
                 return ApiResponse::send('Email Not Found', [], 500);
             }
 
+            if ($lead->status == Lead::SUCCESS) {
+                return ApiResponse::send('Transaksi Gagal. Lead sudah digunakan', [], 401);
+            }
+
             if ($vendor->active == false) {
                 return APiResponse::send('Vendor tidak aktif', [], 401);
             }
 
-            if ($lead->vendor_id !== (string) $vendor->id) {
+            if ((string) $lead->vendor_id !== (string) $vendor->id) {
                 return ApiResponse::send('Vendor tidak sesuai dengan data Lead', [], 500);
             }
 
             $service = ServiceCommission::where('id', $request->service_commission_id)->first();
 
-            if ($service->vendor_id !== (string) $vendor->id) {
+            if ((string) $service->vendor_id !== (string) $vendor->id) {
                 return ApiResponse::send('Service / Product tidak sesuai dengan Vendor', [], 500);
             }
     

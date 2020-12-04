@@ -624,7 +624,13 @@ class DatatableController extends Controller
     ################################################ USER ####################################################
     public function vendorAffiliate(Request $request) {
         if ($request->ajax()) {
-            $serviceCommission = ServiceCommission::leftJoin('vendors', 'vendors.id', '=', 'service_commissions.vendor_id')->where('vendors.active', true)->get();
+            $vendorActive = Vendor::where('active', true)->get();
+            
+            foreach ($vendorActive as $key => $value) {
+                $vendorId[] = $value->id;
+            }
+
+            $serviceCommission = ServiceCommission::whereIn('vendor_id', $vendorId)->get();
             $userId = Auth::id();
 
             $media = Media::get()->keyBy('name');
@@ -644,7 +650,7 @@ class DatatableController extends Controller
                             }
                         })
                         ->addColumn('link', function($row) use ($userId, $url, $media){
-                            $link_website = $url.$row->vendor_id.'.'.$userId.'.'.$media['Website']->id;
+                            $link_website = $url.$row->id.'.'.$userId.'.'.$media['Website']->id;
                             $linkEmbed = '<a href='.$link_website.'>'.$row->vendor->name.'</a>';
                             return '<span>Link Affiliate</span>
                                         <div class="form-group">
@@ -683,12 +689,12 @@ class DatatableController extends Controller
                                         </div>';
                         })
                         ->addColumn('action', function($row) use ($userId, $url, $media) {
-                            $link['facebook'] = $url.$row->vendor_id.'.'.$userId.'.'.$media['Facebook']->id;
-                            $link['email'] = $url.$row->vendor_id.'.'.$userId.'.'.$media['Email']->id;
-                            $link['telegram'] = $url.$row->vendor_id.'.'.$userId.'.'.$media['Telegram']->id;
-                            $link['whatsapp'] = $url.$row->vendor_id.'.'.$userId.'.'.$media['Whatsapp']->id;
-                            $link['linkedin'] = $url.$row->vendor_id.'.'.$userId.'.'.$media['LinkedIn']->id;
-                            $link['twitter'] = $url.$row->vendor_id.'.'.$userId.'.'.$media['Twitter']->id;
+                            $link['facebook'] = $url.$row->id.'.'.$userId.'.'.$media['Facebook']->id;
+                            $link['email'] = $url.$row->id.'.'.$userId.'.'.$media['Email']->id;
+                            $link['telegram'] = $url.$row->id.'.'.$userId.'.'.$media['Telegram']->id;
+                            $link['whatsapp'] = $url.$row->id.'.'.$userId.'.'.$media['Whatsapp']->id;
+                            $link['linkedin'] = $url.$row->id.'.'.$userId.'.'.$media['LinkedIn']->id;
+                            $link['twitter'] = $url.$row->id.'.'.$userId.'.'.$media['Twitter']->id;
                             
                             $btn = '
                                 <a href="https://www.facebook.com/sharer/sharer.php?u='.$link['facebook'].'" target="_blank" class="btn btn-sm btn-circle btn-facebook" title="Share On Facebook"><i class="fab fa-facebook-f"></i></a>
@@ -787,6 +793,12 @@ class DatatableController extends Controller
                         ->addIndexColumn()
                         ->editColumn('vendor_id', function($row) {
                             return $row->vendor->name;
+                        })
+                        ->editColumn('email', function($row) {
+                            return $this->hideEmail($row->email);
+                        })
+                        ->editColumn('no_telepon', function($row) {
+                            return $this->hidePhoneNumber($row->no_telepon);
                         })
                         ->editColumn('date', function($row) {
                             return $this->convertDateView($row->date);

@@ -21,7 +21,7 @@ class Transaction extends Model
     public static function getCommissionValue($service_id, $amount) {
         $service = ServiceCommission::findOrfail($service_id);
 
-        if ($service->commission_type_id === "1") {
+        if ((string) $service->commission_type_id === "1") {
             $commission = $service->commission_value;
         } else {
             $commission = ($amount * $service->commission_value) / 100;

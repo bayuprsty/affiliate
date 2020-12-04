@@ -2,7 +2,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title"><button class="btn btn-light btn-sm" data-dismiss="modal"><i class="fa fa-chevron-left"></i></button> &ensp;Tambah Komisi</h4>
+                <h4 class="modal-title"><button class="btn btn-light btn-sm" data-dismiss="modal"><i class="fa fa-chevron-left"></i></button> &ensp;Tambah Services</h4>
             </div>
             <div class="modal-body">
                 <form class="form-horizontal" id="commissionForm">
@@ -27,6 +27,12 @@
                         <label class="col-sm-3 col-form-label">Description</label>
                         <div class="col-sm-9">
                             <input type="text" id="commissionDescription" name="description" placeholder="Description" class="form-control form-control-sm">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Service Link</label>
+                        <div class="col-sm-9">
+                            <input type="text" id="commissionServiceLink" name="service_link" placeholder="Service Link" class="form-control form-control-sm">
                         </div>
                     </div>
                     <div class="form-group row">

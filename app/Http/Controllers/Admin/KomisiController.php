@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
+use Validator;
+
 use App\Models\ServiceCommission;
 use App\Models\CommissionType;
 use App\Models\Vendor;
@@ -21,12 +23,31 @@ class KomisiController extends Controller
 
     public function store (Request $request) {
         if ($request->ajax()) {
-            $this->validate($request, [
+            $message = [
+                'vendor_id.required' => 'Vendor tidak boleh kosong',
+                'title.required' => 'Title tidak boleh kosong',
+                'service_link.required' => 'Service Link tidak boleh kosong',
+                'commission_type_id.required' => 'Tipe Komisi tidak boleh kosong',
+                'commission_value.required' => 'Commission Value tidak boleh kosong'
+            ];
+
+            $validator = Validator::make($request->all(), [
                 'vendor_id' => 'required',
                 'title' => 'required|string',
+                'service_link' => 'required|string',
                 'commission_type_id' => 'required',
                 'commission_value' => 'required|string'
-            ]);
+            ], $message);
+
+            if ($validator->fails()) {
+                foreach ($validator->errors()->messages() as $value) {
+                    $error[] = $value[0];
+                }
+    
+                $stringError = implode(', ', $error);;
+    
+                return $this->sendResponse($stringError, '', 422);
+            }
     
             $saveSuccess = ServiceCommission::create($request->except('idCommission'));
             
@@ -45,12 +66,31 @@ class KomisiController extends Controller
 
     public function update (Request $request) {
         if ($request->ajax()) {
-            $this->validate($request, [
+            $message = [
+                'vendor_id.required' => 'Vendor tidak boleh kosong',
+                'title.required' => 'Title tidak boleh kosong',
+                'service_link.required' => 'Service Link tidak boleh kosong',
+                'commission_type_id.required' => 'Tipe Komisi tidak boleh kosong',
+                'commission_value.required' => 'Commission Value tidak boleh kosong'
+            ];
+
+            $validator = Validator::make($request->all(), [
                 'vendor_id' => 'required',
                 'title' => 'required|string',
+                'service_link' => 'required|string',
                 'commission_type_id' => 'required',
                 'commission_value' => 'required|string'
-            ]);
+            ], $message);
+
+            if ($validator->fails()) {
+                foreach ($validator->errors()->messages() as $value) {
+                    $error[] = $value[0];
+                }
+    
+                $stringError = implode(', ', $error);;
+    
+                return $this->sendResponse($stringError, '', 422);
+            }
     
             $serviceCommission = ServiceCommission::findOrfail($request->idCommission);
     
@@ -58,6 +98,7 @@ class KomisiController extends Controller
                 'vendor_id' => $request->vendor_id,
                 'title' => $request->title,
                 'description' => $request->description,
+                'service_link' => $request->service_link,
                 'commission_type_id' => $request->commission_type_id,
                 'commission_value' => $request->commission_value,
             ]);

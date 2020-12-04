@@ -14,6 +14,7 @@ class ServiceCommission extends Model
         'vendor_id',
         'title',
         'description',
+        'service_link',
         'commission_type_id',
         'commission_value'
     ];

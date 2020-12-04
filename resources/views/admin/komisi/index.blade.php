@@ -1,7 +1,7 @@
 @extends('layouts.admin')
 
 @section('title')
-    <title>Komisi</title>
+    <title>Services</title>
 @endsection
 
 @section('content')
@@ -11,7 +11,7 @@
             <div class="col-md-12">
                 <div class="card shadow mb-4">
                     <div class="card-header bg-info">
-                        <span class="text-xl font-weight-bold text-white text-uppercase mb-1">Setting Komisi</span>
+                        <span class="text-xl font-weight-bold text-white text-uppercase mb-1">Services</span>
                     </div>
                     <div class="card-body">
                         <div class="col-md-12">
@@ -22,6 +22,7 @@
                                         <th>Vendor</th>
                                         <th>Title</th>
                                         <th>Description</th>
+                                        <th>Service Link</th>
                                         <th>Commission</th>
                                         <th>Action</th>
                                     </tr>
@@ -47,7 +48,7 @@
             dom: '<"toolbar">frtip',
             initComplete: function(){
                 $("div.toolbar")
-                    .html('<button style="float: left;" id="createCommission" class="btn btn-primary btn-sm" style="margin-left: 15px;"><i class="fa fa-plus"></i> Komisi</button>');           
+                    .html('<button style="float: left;" id="createCommission" class="btn btn-primary btn-sm" style="margin-left: 15px;"><i class="fa fa-plus"></i> Services</button>');           
             },
             ajax: {
                 url: "{{ route('datatableKomisiAdmin') }}",
@@ -64,6 +65,7 @@
                 {data: 'vendor_id', name: 'vendor'},
                 {data: 'title', name: 'title'},
                 {data: 'description', name: 'description'},
+                {data: 'service_link', name: 'service_link'},
                 {data: 'commission', name: 'commission'},
                 {
                     data: 'action',
@@ -96,6 +98,7 @@
                     $('#vendorList').val(response.vendor_id).change();
                     $('#commissionTitle').val(response.title);
                     $('#commissionDescription').val(response.description);
+                    $('#commissionServiceLink').val(response.service_link);
                     $("input[name=commission_type_id][value=" + response.commission_type_id + "]").prop('checked', true);
                     $('#commissionValue').val(response.commission_value);
                     $('#button-submit').removeClass().addClass('btn btn-warning btn-xs');

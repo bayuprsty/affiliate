@@ -62,7 +62,7 @@
         </a>
         <div id="setting" class="collapse {{ setDropdownShow(['komisi.index', 'payout.index', 'script.index']) }}" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
-            <a class="collapse-item {{ setActive('komisi.index') }}" href="{{ route('komisi.index') }}">Komisi</a>
+            <a class="collapse-item {{ setActive('komisi.index') }}" href="{{ route('komisi.index') }}">Services</a>
             <a class="collapse-item {{ setActive('payout.index') }}" href="{{ route('payout.index') }}">Minimum Payout</a>
             <a class="collapse-item {{ setActive('script.index') }}" href="{{ route('script.index') }}">Script Referral Link</a>
           </div>
