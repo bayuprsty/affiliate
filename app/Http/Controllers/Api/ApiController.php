@@ -176,14 +176,18 @@ class ApiController extends Controller
                 return ApiResponse::send($stringError, '', 422);
             }
     
-            $lead = Lead::where('email', $request->email)->get();
+            $lead = Lead::where('email', $request->email)->first();
             $vendor = Vendor::where('secret_id', $request->header('SECRET-ID'))->first();
+
+            if (is_null($lead)) {
+                return ApiResponse::send('Email Not Found', [], 500);
+            }
 
             if ($vendor->active == false) {
                 return APiResponse::send('Vendor tidak aktif', [], 401);
             }
 
-            if ($lead[0]->vendor_id !== (string) $vendor->id) {
+            if ($lead->vendor_id !== (string) $vendor->id) {
                 return ApiResponse::send('Vendor tidak sesuai dengan data Lead', [], 500);
             }
 
@@ -195,38 +199,36 @@ class ApiController extends Controller
     
             DB::beginTransaction();
 
-            if (count($lead) > 0) {
-                $data = [
-                    'lead_id' => $lead[0]->id,
-                    'service_commission_id' => $request->service_commission_id,
-                    'transaction_date' => Carbon::parse($request->transaction_date)->format('Y-m-d'),
-                    'amount' => $request->amount,
-                    'commission' => !empty($request->commission) ? $request->commission : Transaction::getCommissionValue($request->service_commission_id, $request->amount),
+            $data = [
+                'lead_id' => $lead->id,
+                'service_commission_id' => $request->service_commission_id,
+                'transaction_date' => Carbon::parse($request->transaction_date)->format('Y-m-d'),
+                'amount' => $request->amount,
+                'commission' => !empty($request->commission) ? $request->commission : Transaction::getCommissionValue($request->service_commission_id, $request->amount),
+            ];
+
+            $transactionCreated = Transaction::create($data);
+
+            if ($transactionCreated) {
+                $lead->update(['status' => Lead::SUCCESS]);
+                
+                $dataEmail = [
+                    'customer_name' => $transactionCreated->lead->customer_name,
+                    'email' => $this->hideEmail($transactionCreated->lead->email),
+                    'no_telepon' => $this->hidePhoneNumber($transactionCreated->lead->no_telepon),
+                    'transaction_date' => $this->convertDateView($transactionCreated->transaction_date),
+                    'amount' => $this->currencyView($transactionCreated->amount),
+                    'commission' => $this->currencyView($transactionCreated->commission)
                 ];
-    
-                $transactionCreated = Transaction::create($data);
-    
-                if ($transactionCreated) {
-                    $lead[0]->update(['status' => Lead::SUCCESS]);
-                    
-                    $dataEmail = [
-                        'customer_name' => $transactionCreated->lead->customer_name,
-                        'email' => $this->hideEmail($transactionCreated->lead->email),
-                        'no_telepon' => $this->hidePhoneNumber($transactionCreated->lead->no_telepon),
-                        'transaction_date' => $this->convertDateView($transactionCreated->transaction_date),
-                        'amount' => $this->currencyView($transactionCreated->amount),
-                        'commission' => $this->currencyView($transactionCreated->commission)
-                    ];
-    
-                    $affiliateEmail = $transactionCreated->lead->user->email;
-    
-                    Mail::send('admin.transaction._email', $dataEmail, function($message) use ($affiliateEmail) {
-                        $message->to($affiliateEmail)->subject('Affiliate Transaction Success');
-                    });
-    
-                    DB::commit();
-                    return ApiResponse::send('Transaction Created', $transactionCreated);
-                }
+
+                $affiliateEmail = $transactionCreated->lead->user->email;
+
+                Mail::send('admin.transaction._email', $dataEmail, function($message) use ($affiliateEmail) {
+                    $message->to($affiliateEmail)->subject('Affiliate Transaction Success');
+                });
+
+                DB::commit();
+                return ApiResponse::send('Transaction Created', $transactionCreated);
             }
         } catch (Exception $e) {
             DB::rollback();
