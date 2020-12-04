@@ -624,7 +624,7 @@ class DatatableController extends Controller
     ################################################ USER ####################################################
     public function vendorAffiliate(Request $request) {
         if ($request->ajax()) {
-            $vendorActive = Vendor::where('active', true)->get();
+            $vendorActive = Vendor::where('active', true)->whereNotNull('service_link')->get();
             
             foreach ($vendorActive as $key => $value) {
                 $vendorId[] = $value->id;
