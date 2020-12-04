@@ -81,7 +81,7 @@
     <li class="nav-item {{ setActive('affiliate.vendor') }}">
         <a href="{{ route('affiliate.vendor') }}" class="nav-link">
             <i class="fas fa-fw fa-building"></i>
-            <span>Vendor List</span>
+            <span>Service List</span>
         </a>
     </li>
     <li class="nav-item {{ setActive('affiliate.transaction') }}">

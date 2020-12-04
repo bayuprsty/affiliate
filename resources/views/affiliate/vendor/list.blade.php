@@ -1,7 +1,7 @@
 @extends('layouts.admin')
 
 @section('title')
-    <title>Dashboard</title>
+    <title>Service List</title>
 @endsection
 
 @section('content')
@@ -11,7 +11,7 @@
             <div class="col-md-12">
                 <div class="card shadow mb-2">
                     <div class="card-header bg-info">
-                        <span class="text-xl font-weight-bold text-white text-uppercase mb-1">Vendor List</span>
+                        <span class="text-xl font-weight-bold text-white text-uppercase mb-1">Service List</span>
                     </div>
                     <div class="card-body">
                         <div class="col-md-12">
