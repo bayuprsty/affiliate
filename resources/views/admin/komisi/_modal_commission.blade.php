@@ -5,7 +5,7 @@
                 <h4 class="modal-title"><button class="btn btn-light btn-sm" data-dismiss="modal"><i class="fa fa-chevron-left"></i></button> &ensp;Tambah Services</h4>
             </div>
             <div class="modal-body">
-                <form class="form-horizontal" id="commissionForm">
+                <form class="form-horizontal" id="commissionForm" enctype="multipart/form-data">
                     <div class="form-group row">
                         <label class="col-sm-3 col-form-label">Vendor</label>
                         <div class="col-sm-9">
@@ -32,7 +32,19 @@
                     <div class="form-group row">
                         <label class="col-sm-3 col-form-label">Service Link</label>
                         <div class="col-sm-9">
-                            <input type="text" id="commissionServiceLink" name="service_link" placeholder="Service Link" class="form-control form-control-sm">
+                            <input type="text" id="commissionServiceLink" name="service_link" placeholder="Service Link" class="form-control form-control-sm" required>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Marketing Text</label>
+                        <div class="col-sm-9">
+                            <textarea id="commissionMarketingText" name="marketing_text" placeholder="Marketing Text" class="form-control form-control-sm" rows="5" required></textarea>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Image Service</label>
+                        <div class="col-sm-9">
+                            <input type="file" name="image_upload" required>
                         </div>
                     </div>
                     <div class="form-group row">

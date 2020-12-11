@@ -70,6 +70,7 @@
     function copyLink (id) {
         $('#link'+ id +'').select();
         document.execCommand('copy');
+        $.notify('Link Copied', "info");
     }
 </script>
 @endsection

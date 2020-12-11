@@ -47,6 +47,13 @@ class AffiliateController extends Controller
         return view('affiliate.vendor.list', compact('serviceCommission', 'userId'));
     }
 
+    public function download ($id) {
+        $service = ServiceCommission::findOrfail($id);
+        $path = public_path('/uploads/'.$service->vendor->name.'/'.$service->img_upload);
+        
+        return response()->download($path, $service->img_upload, ['Content-Type' => $service->mime]);
+    }
+
     public function transactionList() {
         return view('affiliate.transaction.index');
     }

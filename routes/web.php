@@ -144,6 +144,7 @@ Route::group(['middleware' => 'auth'], function() {
     Route::group(['prefix' => 'affiliate', 'middleware' => 'can:isAffiliator'], function () {
         Route::get('/dashboard', 'AffiliateController@dashboard')->name('affiliate.dashboard');
         Route::get('/vendor', 'AffiliateController@vendorList')->name('affiliate.vendor');
+        Route::get('/download/{id}', 'AffiliateController@download')->name('service.downloadImage');
         
         Route::group(['prefix' => 'wallet'], function() {
             Route::get('/list', 'AffiliateController@wallet')->name('affiliate.wallet');

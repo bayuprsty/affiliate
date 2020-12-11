@@ -21,6 +21,7 @@
                                         <th>#</th>
                                         <th>Transaction ID</th>
                                         <th>Affiliate Username</th>
+                                        <th>Nomor Rekening</th>
                                         <th>Total Request</th>
                                         <th>Status</th>
                                         <th></th>
@@ -58,6 +59,7 @@
                 },  
                 {data: 'id', name: 'id'},
                 {data: 'user_id', name: 'user_id'},
+                {data: 'no_rekening', name: 'no_rekening'},
                 {data: 'total', name: 'total'},
                 {data: 'status', name: 'status'},
                 {
@@ -84,6 +86,8 @@
                     $('#nomorRekening').val(response.user.nomor_rekening);
                     $('#atasNama').val(response.user.nama_depan);
                     $('#total').val(response.request.total);
+                    $('#total_payout').val(response.request.total);
+                    $('#payout').val(response.payout);
                 }
             })
         });

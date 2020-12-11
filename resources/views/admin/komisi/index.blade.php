@@ -130,16 +130,18 @@
             }
         });
 
-        $('body').on('click', '#button-submit', function() {
+        $('body').on('submit', '#commissionForm', function() {
             event.preventDefault();
-            var id = $(this).attr('data-id');
+            var id = $('#button-submit').attr('data-id');
+            var formData = new FormData(this);
 
             if (id) {
                 $.ajax({
                     url: "{{ route('komisi.update') }}",
                     method: 'POST',
-                    datatype: 'JSON',
-                    data: $('#commissionForm').serialize(),
+                    data: formData,
+                    contentType: false,
+                    processData: false,
                     success: function(res) {
                         if (res.code == 200) {
                             $('#modal-commission').modal('hide');
@@ -154,8 +156,9 @@
                 $.ajax({
                     url: "{{ route('komisi.store') }}",
                     method: 'POST',
-                    datatype: 'JSON',
-                    data: $('#commissionForm').serialize(),
+                    data: formData,
+                    contentType: false,
+                    processData: false,
                     success: function(res) {
                         if (res.code == 200) {
                             $('#modal-commission').modal('hide');

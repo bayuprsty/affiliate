@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 use Validator;
+use Image;
+use File;
 
 use App\Models\ServiceCommission;
 use App\Models\CommissionType;
@@ -27,6 +29,7 @@ class KomisiController extends Controller
                 'vendor_id.required' => 'Vendor tidak boleh kosong',
                 'title.required' => 'Title tidak boleh kosong',
                 'service_link.required' => 'Service Link tidak boleh kosong',
+                'marketing_text.required' => 'Marketing Text tidak boleh kosong',
                 'commission_type_id.required' => 'Tipe Komisi tidak boleh kosong',
                 'commission_value.required' => 'Commission Value tidak boleh kosong'
             ];
@@ -35,6 +38,7 @@ class KomisiController extends Controller
                 'vendor_id' => 'required',
                 'title' => 'required|string',
                 'service_link' => 'required|string',
+                'marketing_text' => 'required|string',
                 'commission_type_id' => 'required',
                 'commission_value' => 'required|string'
             ], $message);
@@ -48,8 +52,34 @@ class KomisiController extends Controller
     
                 return $this->sendResponse($stringError, '', 422);
             }
+
+            $vendor = Vendor::findOrfail($request->vendor_id);
+
+            if ($request->file('image_upload')) {
+                $path = public_path('uploads/'.$vendor->name);
+                
+                if(!File::isDirectory($path)){
+                    File::makeDirectory($path, 0777, true, true);
+                }
+
+                $img = $request->file('image_upload');
+                $filename = time().'.'.$img->getClientOriginalExtension();
+
+                Image::make($img)->save( $path.'/'.$filename );
+            }
+
+            $data = [
+                'vendor_id' => $request->vendor_id,
+                'title' => $request->title,
+                'description' => $request->description,
+                'service_link' => $request->service_link,
+                'marketing_text' => $request->marketing_text,
+                'img_upload' => $filename,
+                'commission_type_id' => $request->commission_type_id,
+                'commission_value' => $request->commission_value
+            ];
     
-            $saveSuccess = ServiceCommission::create($request->except('idCommission'));
+            $saveSuccess = ServiceCommission::create($data);
             
             if ($saveSuccess) {
                 return $this->sendResponse('Komisi Berhasil ditambahkan');
@@ -70,6 +100,7 @@ class KomisiController extends Controller
                 'vendor_id.required' => 'Vendor tidak boleh kosong',
                 'title.required' => 'Title tidak boleh kosong',
                 'service_link.required' => 'Service Link tidak boleh kosong',
+                'marketing_text.required' => 'Marketing Text tidak boleh kosong',
                 'commission_type_id.required' => 'Tipe Komisi tidak boleh kosong',
                 'commission_value.required' => 'Commission Value tidak boleh kosong'
             ];
@@ -78,6 +109,7 @@ class KomisiController extends Controller
                 'vendor_id' => 'required',
                 'title' => 'required|string',
                 'service_link' => 'required|string',
+                'marketing_text' => 'required|string',
                 'commission_type_id' => 'required',
                 'commission_value' => 'required|string'
             ], $message);
@@ -93,12 +125,33 @@ class KomisiController extends Controller
             }
     
             $serviceCommission = ServiceCommission::findOrfail($request->idCommission);
+            $vendor = Vendor::findOrfail($serviceCommission->vendor_id);
+
+            if ($request->file('image_upload')) {
+                $img = $request->file('image_upload');
+                $oldFilename = $serviceCommission->filename.'.'.$img->getClientOriginalExtension();
+                
+                $path = public_path('uploads/'.$vendor->name);
+
+                if(!File::isDirectory($path)){
+                    File::makeDirectory($path, 0777, true, true);
+                }
+                
+                if (file_exists($path.'/'.$oldFilename)) {
+                    unlink($path.'/'.$oldFilename);
+                }
+                
+                $filename = time().'.'.$img->getClientOriginalExtension();
+                Image::make($img)->save( $path.'/'.$filename );
+            }
     
             $updateSuccess = $serviceCommission->update([
                 'vendor_id' => $request->vendor_id,
                 'title' => $request->title,
                 'description' => $request->description,
                 'service_link' => $request->service_link,
+                'marketing_text' => $request->marketing_text,
+                'img_upload' => $filename,
                 'commission_type_id' => $request->commission_type_id,
                 'commission_value' => $request->commission_value,
             ]);

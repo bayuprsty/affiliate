@@ -23,11 +23,14 @@ class WithdrawController extends Controller
     public function proses (Request $request) {
         if (request()->ajax()) {
             $withdrawalRequest = Withdrawal::findOrFail($request->id);
+            $withdrawalPayout = $withdrawalRequest->total;
+
+            //CUSTOM FORMAT TOTAL WITHDRAW
             $withdrawalRequest->total = 'Rp. '.number_format($withdrawalRequest->total, 0, ',', '.');
             
-            $user = User::findOrfail(Auth::id());
+            $user = User::findOrfail($withdrawalRequest->user_id);
 
-            return response()->json(['request' => $withdrawalRequest, 'user' => $user]);
+            return response()->json(['request' => $withdrawalRequest, 'user' => $user, 'payout' => $withdrawalPayout]);
         }
     }
 

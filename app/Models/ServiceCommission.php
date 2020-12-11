@@ -15,6 +15,8 @@ class ServiceCommission extends Model
         'title',
         'description',
         'service_link',
+        'marketing_text',
+        'img_upload',
         'commission_type_id',
         'commission_value'
     ];

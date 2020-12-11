@@ -34,7 +34,8 @@
                     <div class="form-group row">
                         <label class="col-sm-3 col-form-label">Membayarkan</label>
                         <div class="col-sm-9">
-                            <input type="text" name="payout" class="form-control" required>
+                            <input type="text" id="total_payout" class="form-control" readonly>
+                            <input type="hidden" name="payout" id="payout" required readonly>
                         </div>
                     </div>
                     <div class="form-group row">

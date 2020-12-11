@@ -10,7 +10,7 @@
                 </div>
             </div>
             <div class="modal-body">
-                <table class="table" style="font-size: 13px;">
+                <table class="table table-responsive-sm" style="font-size: 13px;">
                     <tr>
                         <td>ID</td>
                         <td><b id="id"></b></td>

@@ -505,6 +505,9 @@ class DatatableController extends Controller
                         ->editColumn('user_id', function($row) {
                             return $row->user->username;
                         })
+                        ->addColumn('no_rekening', function($row) {
+                            return $row->user->nomor_rekening;
+                        })
                         ->editColumn('total', function($row) {
                             return $this->currencyView($row->total);
                         })
@@ -651,14 +654,18 @@ class DatatableController extends Controller
                         })
                         ->addColumn('link', function($row) use ($userId, $url, $media){
                             $link_website = $url.$row->id.'.'.$userId.'.'.$media['Website']->id;
-                            $linkEmbed = '<a href='.$link_website.'>'.$row->vendor->name.'</a>';
-                            return '<span>Link Affiliate</span>
+                            $imagePath = url('/uploads').'/'.$row->vendor->name.'/'.$row->img_upload;
+                            $linkEmbed = '<a href='.$link_website.'>'.'<img src="'.$imagePath.'" class="img-fluid" style="width: 200px; height: 200px; border: 1px solid">'."<br>".$row->title.'</a>';
+                            
+                            $marketingText = $row->marketing_text;
+
+                            $dataLink = '<span>Link Affiliate</span>
                                         <div class="form-group">
                                             <div class="controls">
                                                 <div class="input-group">
-                                                    <input type="text" id="link'.$row->id.'" class="form-control form-control-sm bg-white" value="'.$link_website.'" readonly>
+                                                    <input type="text" id="link'.$row->id.'1" class="form-control form-control-sm bg-white" value="'.$link_website.'" readonly>
                                                     <span class="input-group-append">
-                                                        <button class="btn btn-light" onclick="copyLink('.$row->id.')" title="Copy Link"><i class="fa fa-clone"></i></button>
+                                                        <button class="btn btn-light" onclick="copyLink('.$row->id.'1)" title="Copy Link"><i class="fa fa-clone"></i></button>
                                                     </span>
                                                 </div>
                                             </div>
@@ -668,9 +675,9 @@ class DatatableController extends Controller
                                         <div class="form-group">
                                             <div class="controls">
                                                 <div class="input-group">
-                                                    <input type="text" id="link'.$row->id.'" class="form-control form-control-sm bg-white" value="'.$linkEmbed.'" readonly>
+                                                    <textarea id="link'.$row->id.'2" class="form-control form-control-sm bg-white" readonly>'.$linkEmbed.'</textarea>
                                                     <span class="input-group-append">
-                                                        <button class="btn btn-light" onclick="copyLink('.$row->id.')" title="Copy Link"><i class="fa fa-clone"></i></button>
+                                                        <button class="btn btn-light" onclick="copyLink('.$row->id.'2)" title="Copy Link"><i class="fa fa-clone"></i></button>
                                                     </span>
                                                 </div>
                                             </div>
@@ -680,26 +687,37 @@ class DatatableController extends Controller
                                         <div class="form-group">
                                             <div class="controls">
                                                 <div class="input-group">
-                                                    <input type="text" id="link'.$row->id.'" class="form-control form-control-sm bg-white" value="'.$link_website.'" readonly>
+                                                    <textarea type="text" id="link'.$row->id.'3" class="form-control form-control-sm bg-white" rows="5" readonly>'.$marketingText.'</textarea>
                                                     <span class="input-group-append">
-                                                        <button class="btn btn-light" onclick="copyLink('.$row->id.')" title="Copy Link"><i class="fa fa-clone"></i></button>
+                                                        <button class="btn btn-light" onclick="copyLink('.$row->id.'3)" title="Copy Link"><i class="fa fa-clone"></i></button>
                                                     </span>
                                                 </div>
                                             </div>
                                         </div>';
+                            
+                            $dataImage = is_null($row->img_upload) ? '' : '<div class="form-group">
+                                                                                <div class="controls">
+                                                                                    <div class="input-group">
+                                                                                        <img src="/uploads/'.$row->vendor->name.'/'.$row->img_upload.'" class="img-fluid" style="width: 200px; height: 200px; border: 1px solid">
+                                                                                    </div><br>
+                                                                                    <a href="'.route("service.downloadImage", $row->id).'" class="btn btn-outline-danger btn-sm">Download Image</a>
+                                                                                </div>
+                                                                            </div>';
+
+                            return $dataLink.$dataImage;
                         })
-                        ->addColumn('action', function($row) use ($userId, $url, $media) {
-                            $link['facebook'] = $url.$row->id.'.'.$userId.'.'.$media['Facebook']->id;
-                            $link['email'] = $url.$row->id.'.'.$userId.'.'.$media['Email']->id;
-                            $link['telegram'] = $url.$row->id.'.'.$userId.'.'.$media['Telegram']->id;
-                            $link['whatsapp'] = $url.$row->id.'.'.$userId.'.'.$media['Whatsapp']->id;
-                            $link['linkedin'] = $url.$row->id.'.'.$userId.'.'.$media['LinkedIn']->id;
-                            $link['twitter'] = $url.$row->id.'.'.$userId.'.'.$media['Twitter']->id;
+                        ->addColumn('action', function($row) use ($userId, $url, $media) {                            
+                            $link['facebook'] = $row->marketing_text." ".$url.$row->id.'.'.$userId.'.'.$media['Facebook']->id;
+                            $link['email'] = $row->marketing_text." ".$url.$row->id.'.'.$userId.'.'.$media['Email']->id;
+                            $link['telegram'] = $row->marketing_text." ".$url.$row->id.'.'.$userId.'.'.$media['Telegram']->id;
+                            $link['whatsapp'] = $row->marketing_text." ".$url.$row->id.'.'.$userId.'.'.$media['Whatsapp']->id;
+                            $link['linkedin'] = $row->marketing_text." ".$url.$row->id.'.'.$userId.'.'.$media['LinkedIn']->id;
+                            $link['twitter'] = $row->marketing_text." ".$url.$row->id.'.'.$userId.'.'.$media['Twitter']->id;
                             
                             $btn = '
                                 <a href="https://www.facebook.com/sharer/sharer.php?u='.$link['facebook'].'" target="_blank" class="btn btn-sm btn-circle btn-facebook" title="Share On Facebook"><i class="fab fa-facebook-f"></i></a>
                                 <a href="mailto:?subject=[SUBJECT]&body='.$link['email'].'" target="_blank" class="btn btn-sm btn-circle btn-danger" title="Share On Email"><i class="fa fa-envelope"></i></a>
-                                <a href="#" target="_blank" class="btn btn-sm btn-circle btn-info" title="Share On Telegram"><i class="fab fa-telegram"></i></a>
+                                <a href="https://t.me/share/url?url='.$link['telegram'].'" target="_blank" class="btn btn-sm btn-circle btn-info" title="Share On Telegram"><i class="fab fa-telegram"></i></a>
                                 <a href="https://api.whatsapp.com/send?text='.$link['whatsapp'].'" data-action="share/whatsapp/share" target="_blank" class="btn btn-sm btn-circle btn-success" title="Share On Whatsapp"><i class="fab fa-whatsapp"></i></a>
                                 <a href="https://www.linkedin.com/shareArticle?mini=true&url='.$link['linkedin'].'" target="_blank" class="btn btn-sm btn-circle btn-linkedin" title="Share On LinkedIn"><i class="fab fa-linkedin"></i></a>
                                 <a href="https://twitter.com/share?url='.$link['twitter'].'" target="_blank" class="btn btn-sm btn-circle btn-twitter" title="Share On Twitter"><i class="fab fa-twitter"></i></a>
