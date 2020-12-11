@@ -129,7 +129,7 @@ class KomisiController extends Controller
 
             if ($request->file('image_upload')) {
                 $img = $request->file('image_upload');
-                $oldFilename = $serviceCommission->filename.'.'.$img->getClientOriginalExtension();
+                $oldFilename = $serviceCommission->img_upload;
                 
                 $path = public_path('uploads/'.$vendor->name);
 
@@ -137,12 +137,14 @@ class KomisiController extends Controller
                     File::makeDirectory($path, 0777, true, true);
                 }
                 
-                if (file_exists($path.'/'.$oldFilename)) {
+                if (!is_null($oldFilename) && file_exists($path.'/'.$oldFilename)) {
                     unlink($path.'/'.$oldFilename);
                 }
                 
                 $filename = time().'.'.$img->getClientOriginalExtension();
                 Image::make($img)->save( $path.'/'.$filename );
+            } else {
+                $filename = !is_null($serviceCommission->img_upload) ? $serviceCommission->img_upload : NULL;
             }
     
             $updateSuccess = $serviceCommission->update([

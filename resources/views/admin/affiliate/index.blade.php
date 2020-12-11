@@ -86,7 +86,8 @@
                 dom: '<"toolbar">frtip',
                 initComplete: function(){
                     $("div.toolbar")
-                        .html('<button id="vendor-button" style="float: left;" class="btn btn-primary btn-sm" style="margin-left: 15px;">Data Per Vendor</button>');           
+                        .html('<button id="vendor-button" style="float: left;" class="btn btn-primary btn-sm" style="margin-left: 15px;">Data Per Vendor</button>');
+                    $("#affiliate_list").wrap("<div style='overflow:auto; width:100%;position:relative;'></div>");
                 },
                 ajax: {
                     url: "{{ route('datatableAffiliateAdmin') }}",
@@ -147,6 +148,7 @@
                 initComplete: function(){
                     $("div.toolbar")
                         .html('<button id="affiliate-button" style="float: left;" class="btn btn-primary btn-sm" style="margin-left: 15px;">Data Per User</button>');           
+                    $("#affiliate_list").wrap("<div style='overflow:auto; width:100%;position:relative;'></div>");
                 },
                 ajax: {
                     url: "{{ route('datatableAffiliateVendorAdmin') }}",

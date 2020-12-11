@@ -99,6 +99,7 @@
                     $('#commissionTitle').val(response.title);
                     $('#commissionDescription').val(response.description);
                     $('#commissionServiceLink').val(response.service_link);
+                    $('#commissionMarketingText').val(response.marketing_text);
                     $("input[name=commission_type_id][value=" + response.commission_type_id + "]").prop('checked', true);
                     $('#commissionValue').val(response.commission_value);
                     $('#button-submit').removeClass().addClass('btn btn-warning btn-xs');

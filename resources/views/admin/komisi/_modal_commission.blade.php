@@ -38,13 +38,13 @@
                     <div class="form-group row">
                         <label class="col-sm-3 col-form-label">Marketing Text</label>
                         <div class="col-sm-9">
-                            <textarea id="commissionMarketingText" name="marketing_text" placeholder="Marketing Text" class="form-control form-control-sm" rows="5" required></textarea>
+                            <textarea id="commissionMarketingText" name="marketing_text" placeholder="Marketing Text" class="form-control form-control-sm" rows="5"></textarea>
                         </div>
                     </div>
                     <div class="form-group row">
                         <label class="col-sm-3 col-form-label">Image Service</label>
                         <div class="col-sm-9">
-                            <input type="file" name="image_upload" required>
+                            <input type="file" name="image_upload">
                         </div>
                     </div>
                     <div class="form-group row">
