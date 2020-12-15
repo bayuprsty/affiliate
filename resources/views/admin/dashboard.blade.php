@@ -174,7 +174,7 @@
                                                             <input type="date" class="form-control form-control-sm" id="dateEnd" placeholder="dd / mm / yyyy">
                                                         </div>
                                                     </div>
-                                                    <div class="col-md-2">
+                                                    <div class="col-md-5">
                                                         <button class="btn btn-primary btn-sm" id="filter"><i class="fa fa-search"> Filter</i></button>
                                                         <button class="btn btn-light btn-sm" id="resetData"><i class="fa fa-undo"> Reset</i></button>
                                                     </div>
