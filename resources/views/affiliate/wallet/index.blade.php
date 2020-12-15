@@ -101,7 +101,10 @@
                 {data: 'total', name: 'total'},
                 {data: 'status', name: 'status'},
                 {data: 'action', name: 'action'}
-            ]
+            ],
+            initComplete: function () {  
+                $("#withdraw_request").wrap("<div style='overflow:auto; width:100%;position:relative;'></div>");            
+            },
         } );
 
         $('body').on('click', '#requestWithdrawal', function() {

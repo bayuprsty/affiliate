@@ -49,6 +49,7 @@
             initComplete: function(){
                 $("div.toolbar")
                     .html('<button style="float: left;" id="createCommission" class="btn btn-primary btn-sm" style="margin-left: 15px;"><i class="fa fa-plus"></i> Services</button>');           
+                $("#komisi_list").wrap("<div style='overflow:auto; width:100%;position:relative;'></div>");
             },
             ajax: {
                 url: "{{ route('datatableKomisiAdmin') }}",

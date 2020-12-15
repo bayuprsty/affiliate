@@ -67,7 +67,10 @@
                     name: 'action'
                 }
             ],
-            order: [[1, 'ASC']]
+            order: [[1, 'ASC']],
+            initComplete: function () {  
+                $("#withdrawal_list").wrap("<div style='overflow:auto; width:100%;position:relative;'></div>");      
+            },
         });
 
         $('body').on('click', '#prosesWithdrawal', function() {

@@ -14,8 +14,8 @@
                         <span class="text-xl font-weight-bold text-white text-uppercase mb-1">Transaction</span>
                     </div>
                     <div class="card-body">
-                        <div class="row" style="margin: 0 auto">
-                            <div class="col">
+                        <div class="row col-md-12">
+                            <div class="col-md-2">
                                 <select name="status_id" class="form-control form-control-sm" id="status_id">
                                     <option value="all">All Status</option>
                                     <option value="1">ON PROGRESS</option>
@@ -23,18 +23,20 @@
                                     <option value="3">CANCELED</option>
                                 </select>
                             </div>
-                            <div class="col">
+                            <div class="col-md-2">
                                 <div class="form-group">
                                     <input type="date" class="form-control form-control-sm" id="dateStart">
                                 </div>
                             </div>
-                            to
-                            <div class="col">
+                            <div class="col-sm-1 text-center">
+                                to
+                            </div>
+                            <div class="col-md-2">
                                 <div class="form-group">
                                     <input type="date" class="form-control form-control-sm" id="dateEnd">
                                 </div>
                             </div>
-                            <div class="col">
+                            <div class="col-md-2">
                                 <button class="btn btn-dark btn-sm" id="searchData">Search</button>
                                 <button class="btn btn-light btn-sm" id="resetData">Reset</button>
                             </div>
@@ -112,6 +114,9 @@
             ],
             drawCallback: function() {
                 $('[data-toggle="tooltip"]').tooltip();
+            },
+            initComplete: function () {  
+                $("#transaction_list").wrap("<div style='overflow:auto; width:100%;position:relative;'></div>");            
             },
         });
 

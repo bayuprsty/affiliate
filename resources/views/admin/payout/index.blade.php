@@ -59,7 +59,10 @@
                     name: 'action'
                 }
             ],
-            order: [[1, 'ASC']]
+            order: [[1, 'ASC']],
+            initComplete: function () {  
+                $("#payout_list").wrap("<div style='overflow:auto; width:100%;position:relative;'></div>");            
+            },
         });
 
         $('body').on('click', '#createPayout', function() {
@@ -69,7 +72,7 @@
             $('#button-submit').html('Simpan');
         });
 
-        $('body').on('click', '#editButton', function() {
+        $('body').on('click', '#editPayout', function() {
             var id = $(this).attr('data-id');
             var url = "{{ route('payout.edit') }}";
 

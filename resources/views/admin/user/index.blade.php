@@ -70,6 +70,9 @@
                     name: 'action'
                 }
             ],
+            initComplete: function () {  
+                $("#user_list").wrap("<div style='overflow:auto; width:100%;position:relative;'></div>");            
+            },
         });
     });
 </script>

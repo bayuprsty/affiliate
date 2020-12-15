@@ -45,7 +45,7 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col mb-4">
+                            <div class="col-md-2 mb-4">
                                 <div class="card border-left-danger shadow h-100 py-2">
                                     <div class="card-body text-center">
                                         <div class="row no-gutters align-items-center">
@@ -58,7 +58,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col mb-4">
+                            <div class="col-md-2 mb-4">
                                 <div class="card border-left-dark shadow h-100 py-2">
                                     <div class="card-body text-center">
                                         <div class="row no-gutters align-items-center">
@@ -71,12 +71,12 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col mb-4">
+                            <div class="col-md-3 mb-4">
                                 <div class="card border-left-warning shadow h-100 py-2">
                                     <div class="card-body text-center">
                                         <div class="row no-gutters align-items-center">
                                             <div class="col mr-2">
-                                                <div class="text-xl font-weight-bold text-primary text-uppercase mb-1">Conversion</div>
+                                                <div class="text-sm-center font-weight-bold text-primary text-uppercase mb-1">Conversion</div>
                                                 <br/>
                                                 <div class="h4 mb-0 font-weight-bold text-gray-800">{{ $conversion }} %</div>
                                             </div>
@@ -84,7 +84,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col mb-4">
+                            <div class="col-md-2 mb-4">
                                 <div class="card border-left-secondary shadow h-100 py-2">
                                     <div class="card-body text-center">
                                         <div class="row no-gutters align-items-center">
@@ -97,7 +97,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col mb-4">
+                            <div class="col-md-3 mb-4">
                                 <div class="card border-left-info shadow h-100 py-2">
                                     <div class="card-body text-center">
                                         <div class="row no-gutters align-items-center">
@@ -164,6 +164,9 @@
                 {data: 'media_id', name: 'media_id'},
                 {data: 'click', name: 'click'}
             ],
+            initComplete: function () {  
+                $("#user_click_table").wrap("<div style='overflow:auto; width:100%;position:relative;'></div>");            
+            },
         });
 
         $('body').on('click', '#requestWithdrawal', function() {

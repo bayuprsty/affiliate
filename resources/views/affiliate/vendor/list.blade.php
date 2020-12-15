@@ -64,6 +64,9 @@
                 {data: 'action', name: 'action'}
             ],
             order: [[1, 'ASC']],
+            initComplete: function () {  
+                $("#affiliate_vendor_list").wrap("<div style='overflow:auto; width:100%;position:relative;'></div>");            
+            },
         } );
     });
 

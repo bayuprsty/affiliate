@@ -49,6 +49,7 @@
             initComplete: function(){
                 $("div.toolbar")
                     .html('<a href="{{ route("vendor.add") }}" class="btn btn-primary btn-sm" style="float: left"><i class="fa fa-plus"></i> Vendor</a>');           
+                $("#vendor_list").wrap("<div style='overflow:auto; width:100%;position:relative;'></div>");
             },
             ajax: {
                 url: "{{ route('datatableVendorAdmin') }}",

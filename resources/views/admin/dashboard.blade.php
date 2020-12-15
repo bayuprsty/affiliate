@@ -159,22 +159,24 @@
                                                     <option value="custom">Custom Range Date</option>
                                                 </select>
                                             </div>
-                                            <div class="col-md-9" style="visibility: hidden" id="date_range">
+                                            <div class="col-md-9" style="visibility: hidden;" id="date_range">
                                                 <div class="row">
-                                                    <div class="col">
+                                                    <div class="col-md-3">
                                                         <div class="input-group">
                                                             <input type="date" class="form-control form-control-sm" id="dateStart" placeholder="dd / mm / yyyy">
                                                         </div>
                                                     </div>
-                                                    to
-                                                    <div class="col">
+                                                    <div class="col-md-1">
+                                                        to
+                                                    </div>
+                                                    <div class="col-md-3">
                                                         <div class="input-group">
                                                             <input type="date" class="form-control form-control-sm" id="dateEnd" placeholder="dd / mm / yyyy">
                                                         </div>
                                                     </div>
-                                                    <div class="col">
-                                                        <button class="btn btn-primary btn-sm" id="filter">Filter</button>
-                                                        <button class="btn btn-light btn-sm" id="resetData">Reset</button>
+                                                    <div class="col-md-2">
+                                                        <button class="btn btn-primary btn-sm" id="filter"><i class="fa fa-search"> Filter</i></button>
+                                                        <button class="btn btn-light btn-sm" id="resetData"><i class="fa fa-undo"> Reset</i></button>
                                                     </div>
                                                 </div>
                                             </div>
@@ -235,7 +237,10 @@
                 {data: 'signup', name: 'signup'},
                 {data: 'conversion', name: 'conversion'}
             ],
-        });
+            "initComplete": function (settings, json) {  
+                $("#top_affiliate_list").wrap("<div style='overflow:auto; width:100%;position:relative;'></div>");            
+            },
+        })
 
         $('#filter_periode').on('change', function() {
             if ($(this).val() !== 'custom') {

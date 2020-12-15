@@ -15,7 +15,7 @@
                     </div>
                     <div class="card-body">
                         <div class="row" style="margin: 0 auto">
-                        <div class="col">
+                        <div class="col-md-2">
                                 <select name="status_id" class="form-control form-control-sm" id="status_id">
                                     <option value="all">-- Select Status --</option>
                                     <option value="1">ON PROGRESS</option>
@@ -23,20 +23,22 @@
                                     <option value="3">CANCELED</option>
                                 </select>
                             </div>
-                            <div class="col">
+                            <div class="col-md-2">
                                 <div class="input-group">
                                     <input type="date" class="form-control form-control-sm" id="dateStart">
                                 </div>
                             </div>
-                            to
-                            <div class="col">
+                            <div class="col-md-1 text-center">
+                                to
+                            </div>
+                            <div class="col-md-2">
                                 <div class="input-group">
                                     <input type="date" class="form-control form-control-sm" id="dateEnd">
                                 </div>
                             </div>
-                            <div class="col">
+                            <div class="col-md-2 text-center">
                                 <button class="btn btn-primary btn-sm" id="searchData">Search</button>
-                                <button class="btn btn-default btn-sm" id="resetData">Reset</button>
+                                <button class="btn btn-light btn-sm" id="resetData">Reset</button>
                             </div>
                             <div class="col text-right">
                                 <button class="btn btn-success btn-sm" id="exportData">Export</button>
@@ -103,6 +105,9 @@
             ],
             drawCallback: function() {
                 $('[data-toggle="tooltip"]').tooltip();
+            },
+            initComplete: function () {  
+                $("#transactionAff_list").wrap("<div style='overflow:auto; width:100%;position:relative;'></div>");            
             },
         });
 

@@ -15,7 +15,7 @@
                     </div>
                     <div class="card-body">
                         <div class="row" style="margin: 0 auto">
-                            <div class="col">
+                            <div class="col-md-2">
                                 <select name="status_id" class="form-control form-control-sm" id="status_id">
                                     <option value="all">-- Select Status --</option>
                                     <option value="1">ON PROGRESS</option>
@@ -23,18 +23,20 @@
                                     <option value="3">CANCELED</option>
                                 </select>
                             </div>
-                            <div class="col">
+                            <div class="col-md-2">
                                 <div class="input-group">
                                     <input type="date" class="form-control form-control-sm" id="dateStart" placeholder="dd / mm / yyyy">
                                 </div>
                             </div>
-                            to
-                            <div class="col">
+                            <div class="col-md-1 text-center">
+                                to
+                            </div>
+                            <div class="col-md-2">
                                 <div class="input-group">
                                     <input type="date" class="form-control form-control-sm" id="dateEnd" placeholder="dd / mm / yyyy">
                                 </div>
                             </div>
-                            <div class="col">
+                            <div class="col-md-2">
                                 <button class="btn btn-primary btn-sm" id="searchData">Search</button>
                                 <button class="btn btn-light btn-sm" id="resetData">Reset</button>
                             </div>
@@ -104,6 +106,9 @@
                 {data: 'status', name: 'status'},
                 {data: 'action', name: 'action'}
             ],
+            initComplete: function () {  
+                $("#lead_list").wrap("<div style='overflow:auto; width:100%;position:relative;'></div>");            
+            },
         } );
 
         $('#searchData').click(function() {
