@@ -329,8 +329,9 @@ class DatatableController extends Controller
 
     public function transactionAdmin(Request $request) {
         if ($request->ajax()) {
-            $transaction = Transaction::orderBy('id', 'DESC');
+            $transaction = Transaction::orderBy('transactions.id', 'DESC');
             if ($request->status !== 'all') {
+                $transaction->leftJoin('leads', 'leads.id', '=', 'transactions.lead_id');
                 if ($request->status == Lead::ON_PROCESS) {
                     $transaction->where('leads.status', Lead::ON_PROCESS);
                 } elseif ($request->status == Lead::SUCCESS) {
