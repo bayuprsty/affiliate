@@ -207,12 +207,24 @@ class ApiController extends Controller
     
             DB::beginTransaction();
 
+            if (!empty($request->commission)) {
+                if ((int) $request->commission > $service->max_commission) {
+                    return ApiResponse::send("Maximal Commission : ". $this->currencyView($service->max_commission), [], 501);
+                }
+
+                $commission = $request->commission;
+            } else {
+                $getCommission = Transaction::getCommissionValue($request->service_commission_id, $request->amount);
+
+                $commission = $getCommission > $service->max_commission ? $service->max_commission : $getCommission;
+            }
+
             $data = [
                 'lead_id' => $lead->id,
                 'service_commission_id' => $request->service_commission_id,
                 'transaction_date' => Carbon::parse($request->transaction_date)->format('Y-m-d'),
                 'amount' => $request->amount,
-                'commission' => !empty($request->commission) ? $request->commission : Transaction::getCommissionValue($request->service_commission_id, $request->amount),
+                'commission' => $commission,
             ];
 
             $transactionCreated = Transaction::create($data);

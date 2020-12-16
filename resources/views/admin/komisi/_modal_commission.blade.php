@@ -63,6 +63,12 @@
                         </div>
                     </div>
                     <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Max Commission</label>
+                        <div class="col-sm-9">
+                            <input type="text" id="commissionMax" name="max_commission" placeholder="Commission Maximal Each Transaction" class="form-control form-control-sm">
+                        </div>
+                    </div>
+                    <div class="form-group row">
                         <div class="col-sm-12 text-center">
                             <input type="hidden" name="idCommission" id="idCommission">
                             <button class="btn btn-primary btn-xs" id="button-submit" data-id=""></button>

@@ -18,7 +18,8 @@ class ServiceCommission extends Model
         'marketing_text',
         'img_upload',
         'commission_type_id',
-        'commission_value'
+        'commission_value',
+        'max_commission'
     ];
 
     public function vendor() {

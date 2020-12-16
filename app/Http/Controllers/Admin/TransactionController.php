@@ -66,11 +66,18 @@ class TransactionController extends Controller
                 $leadCreated = Lead::create($dataLead);
     
                 if ($leadCreated) {
+                    $service = ServiceCommission::where('id', $request->service_commission_id)->first();
                     $commission = NULL;
                     if ($request->addCommission == 1) {
                         if ($request->commission == NULL) {
-                            $commission = Transaction::getCommissionValue($request->service_commission_id, $request->amount);
+                            $getCommission = Transaction::getCommissionValue($request->service_commission_id, $request->amount);
+                            $commission = $getCommission > $service->max_commission ? $service->max_commission : $commission;
                         } else {
+                            if ($request->commission > $service->max_commission) {
+                                DB::rollback();
+                                return $this->sendResponse("Maximal Commission : ".$this->currencyView($service->max_commission), [], 401);
+                            }
+
                             $commission = $request->commission;
                         }
                     }

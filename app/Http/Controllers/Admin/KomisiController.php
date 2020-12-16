@@ -76,7 +76,8 @@ class KomisiController extends Controller
                 'marketing_text' => $request->marketing_text,
                 'img_upload' => $filename,
                 'commission_type_id' => $request->commission_type_id,
-                'commission_value' => $request->commission_value
+                'commission_value' => $request->commission_value,
+                'max_commission' => $request->max_commission,
             ];
     
             $saveSuccess = ServiceCommission::create($data);
@@ -156,6 +157,7 @@ class KomisiController extends Controller
                 'img_upload' => $filename,
                 'commission_type_id' => $request->commission_type_id,
                 'commission_value' => $request->commission_value,
+                'max_commission' => $request->max_commission,
             ]);
 
             if ($updateSuccess) {

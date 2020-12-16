@@ -648,10 +648,16 @@ class DatatableController extends Controller
                         })
                         ->editColumn('commission', function($row) {
                             if ($row->commission_type_id == ServiceCommission::FIXED) {
-                                return "You WIll Get : ".$this->currencyView($row->commission_value)." Per Sale";
+                                $stringCommission = "You WIll Get : ".$this->currencyView($row->commission_value)." Per Sale";
                             } else {
-                                return "You WIll Get : ".$this->percentageView($row->commission_value)." Per Sale"; 
+                                $stringCommission = "You WIll Get : ".$this->percentageView($row->commission_value)." Per Sale"; 
                             }
+
+                            if (!is_null($row->max_commission)) {
+                                $stringCommission .= "<br><br>Max Commission Per Sale : ".$this->currencyView($row->max_commission);
+                            }
+
+                            return $stringCommission;
                         })
                         ->addColumn('link', function($row) use ($userId, $url, $media){
                             $link_website = $url.$row->id.'.'.$userId.'.'.$media['Website']->id;
@@ -707,8 +713,9 @@ class DatatableController extends Controller
 
                             return $dataLink.$dataImage;
                         })
-                        ->addColumn('action', function($row) use ($userId, $url, $media) {                            
-                            $link['facebook'] = $row->marketing_text." ".$url.$row->id.'.'.$userId.'.'.$media['Facebook']->id;
+                        ->addColumn('action', function($row) use ($userId, $url, $media) {
+                            $marketing_text = "'".$row->marketing_text."'";
+                            $link['facebook'] = $url.$row->id.'.'.$userId.'.'.$media['Facebook']->id." ".$marketing_text;
                             $link['email'] = $row->marketing_text." ".$url.$row->id.'.'.$userId.'.'.$media['Email']->id;
                             $link['telegram'] = $row->marketing_text." ".$url.$row->id.'.'.$userId.'.'.$media['Telegram']->id;
                             $link['whatsapp'] = $row->marketing_text." ".$url.$row->id.'.'.$userId.'.'.$media['Whatsapp']->id;
@@ -716,17 +723,17 @@ class DatatableController extends Controller
                             $link['twitter'] = $row->marketing_text." ".$url.$row->id.'.'.$userId.'.'.$media['Twitter']->id;
                             
                             $btn = '
-                                <a href="https://www.facebook.com/sharer/sharer.php?u='.$link['facebook'].'" target="_blank" class="btn btn-sm btn-circle btn-facebook" title="Share On Facebook"><i class="fab fa-facebook-f"></i></a>
+                                <a href="https://www.facebook.com/sharer/sharer.php?u='.$link['facebook'].'&text='.$marketing_text.'" target="_blank" class="btn btn-sm btn-circle btn-facebook" title="Share On Facebook"><i class="fab fa-facebook-f"></i></a>
                                 <a href="mailto:?subject=[SUBJECT]&body='.$link['email'].'" target="_blank" class="btn btn-sm btn-circle btn-danger" title="Share On Email"><i class="fa fa-envelope"></i></a>
                                 <a href="https://t.me/share/url?url='.$link['telegram'].'" target="_blank" class="btn btn-sm btn-circle btn-info" title="Share On Telegram"><i class="fab fa-telegram"></i></a>
                                 <a href="https://api.whatsapp.com/send?text='.$link['whatsapp'].'" data-action="share/whatsapp/share" target="_blank" class="btn btn-sm btn-circle btn-success" title="Share On Whatsapp"><i class="fab fa-whatsapp"></i></a>
                                 <a href="https://www.linkedin.com/shareArticle?mini=true&url='.$link['linkedin'].'" target="_blank" class="btn btn-sm btn-circle btn-linkedin" title="Share On LinkedIn"><i class="fab fa-linkedin"></i></a>
                                 <a href="https://twitter.com/share?url='.$link['twitter'].'" target="_blank" class="btn btn-sm btn-circle btn-twitter" title="Share On Twitter"><i class="fab fa-twitter"></i></a>
                                 ';
-
+                                
                             return $btn;
                         })
-                        ->rawColumns(['link','action'])
+                        ->rawColumns(['link', 'commission', 'action'])
                         ->make(true);
         }
     }

@@ -103,6 +103,7 @@
                     $('#commissionMarketingText').val(response.marketing_text);
                     $("input[name=commission_type_id][value=" + response.commission_type_id + "]").prop('checked', true);
                     $('#commissionValue').val(response.commission_value);
+                    $('#commissionMax').val(response.max_commission);
                     $('#button-submit').removeClass().addClass('btn btn-warning btn-xs');
                     $('#button-submit').html('Update');
                     $('#button-submit').attr("data-id", id);
