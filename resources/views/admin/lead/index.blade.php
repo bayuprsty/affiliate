@@ -76,6 +76,8 @@
 @section('js')
 <script type="text/javascript">
     $(document).ready(function() {
+        var prosesLeadFieldset = document.getElementById('prosesLeadFieldset');
+
         var leadList = $('#lead_list').DataTable( {
             processing: true,
             serverside: true,
@@ -160,7 +162,6 @@
                     $('#usernameAffiliate').val(response.user.username);
                     $('#customerName').val(response.lead.customer_name);
                     $('#productService').html(response.service).trigger("change");
-                    $('#commission').val('Rp. ' + 0);
                 }
             });
         });
@@ -173,13 +174,24 @@
                 method: 'POST',
                 datatype: "JSON",
                 data: $('#leadProsesForm').serialize(),
+                beforeSend: function () {
+                    $(prosesLeadFieldset).attr('disabled', true);
+                    $('#loader').show();
+                },
                 success: function(res) {
                     if (res.code == 200) {
                         $('#modal-lead-process').modal('hide');
                         $.notify(res.message, "success");
+
+                        $(prosesLeadFieldset).attr('disabled', false);
+                        $('#loader').hide();
+                        
                         leadList.ajax.reload();
                     } else {
                         $.notify(res.message, "error");
+                        
+                        $(prosesLeadFieldset).attr('disabled', false);
+                        $('#loader').hide();
                     }
                 }
             })
@@ -217,11 +229,9 @@
                     datatype: 'JSON',
                     data: {service_id: service_id, amount: amount},
                     success: function(response) {
-                        $('#commission').val('Rp. ' + response.commission);
+                        $('#commission').val(response.commission);
                     }
                 });
-            } else {
-                $('#commission').val('Rp. ' + 0);
             }
         });
 
@@ -236,11 +246,9 @@
                     dataType: 'JSON',
                     data: {service_id: service_id, amount: amount},
                     success: function(response) {
-                        $('#commission').val('Rp. ' + response.commission);
+                        $('#commission').val(response.commission);
                     }
                 });
-            } else {
-                $('#commission').val('Rp. ' + 0);
             }
         });
 

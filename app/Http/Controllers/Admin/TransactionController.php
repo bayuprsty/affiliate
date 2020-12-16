@@ -71,7 +71,7 @@ class TransactionController extends Controller
                     if ($request->addCommission == 1) {
                         if ($request->commission == NULL) {
                             $getCommission = Transaction::getCommissionValue($request->service_commission_id, $request->amount);
-                            $commission = $getCommission > $service->max_commission ? $service->max_commission : $commission;
+                            $commission = $getCommission > $service->max_commission ? $service->max_commission : $getCommission;
                         } else {
                             if ($request->commission > $service->max_commission) {
                                 DB::rollback();

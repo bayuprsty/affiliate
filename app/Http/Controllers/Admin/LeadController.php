@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use PDF;
 use Validator;
+use Mail;
 use Carbon\Carbon;
 
 use App\Models\Lead;
@@ -78,50 +79,77 @@ class LeadController extends Controller
 
     public function saveProses (Request $request) {
         if (request()->ajax()) {
-            $this->validate($request, [
+            $messages = [
+                'transaction_date.requried' => 'Transaction Date Required',
+                'amount.required' => 'Amount Required',
+                'service_commission_id.required' => 'Service Commission Required'
+            ];
+
+            $validator = Validator::make($request->all(), [
                 'transaction_date' => 'required|string',
                 'amount' => 'required|string',
                 'service_commission_id' => 'required'
-            ]);
+            ], $messages);
+
+            if ($validator->fails()) {
+                foreach ($validator->errors()->messages() as $value) {
+                    $error[] = $value[0];
+                }
+
+                $stringError = implode("\n", $error);
+
+                return $this->sendResponse($stringError, '', 221);
+            }
     
             $service = ServiceCommission::findOrfail($request->service_commission_id);
+
+            try {
+                if ($request->commission == NULL) {
+                    $getCommission = Transaction::getCommissionValue($request->service_commission_id, $request->amount);
+                    $commission = $getCommission > $service->max_commission ? $service->max_commission : $getCommission;
+                } else {
+                    if ($request->commission > $service->max_commission) {
+                        return $this->sendResponse("Maximal Commission : ".$this->currencyView($service->max_commission), [], 401);
+                    }
     
-            if ($service->commission_type_id == 1) {
-                $commission = $service->commission_value;
-            } else {
-                $commission = ($request->amount * $service->commission_value) / 100;
+                    $commission = $request->commission;
+                }
+        
+                $transaction = Transaction::create([
+                    'lead_id' => $request->lead_id,
+                    'service_commission_id' => $request->service_commission_id,
+                    'transaction_date' => $this->convertDateSave($request->transaction_date),
+                    'amount' => $request->amount,
+                    'commission' => $commission
+                ]);
+        
+                if ($transaction) {
+                    Lead::where('id', $request->lead_id)->update(['status' => Lead::SUCCESS]);
+                    
+                    $dataEmail = [
+                        'customer_name' => $transaction->lead->customer_name,
+                        'email' => $this->hideEMail($transaction->lead->email),
+                        'no_telepon' => $this->hidePhoneNumber($transaction->lead->no_telepon),
+                        'transaction_date' => $this->convertDateView($transaction->transaction_date),
+                        'amount' => $this->currencyView($transaction->amount),
+                        'commission' => $this->currencyView($transaction->commission)
+                    ];
+    
+                    $affiliateEmail = $transaction->lead->user->email;
+    
+                    Mail::send('admin.transaction._email', $dataEmail, function($message) use ($affiliateEmail) {
+                        $message->to($affiliateEmail)->subject('Affiliate Transaction Success');
+                    });
+    
+                    return $this->sendResponse("Lead Processed Successfully");
+                } else {
+                    return $this->sendResponse("Lead Processed Fail", "", 221);
+                }
+            } catch (\Exception $e) {
+                return $this->sendResponse("Lead Processed Fail", $e->getMessages(), 501);
             }
-    
-            $transaction = Transaction::create([
-                'lead_id' => $request->lead_id,
-                'service_commission_id' => $request->service_commission_id,
-                'transaction_date' => $this->convertDateSave($request->transaction_date),
-                'amount' => $request->amount,
-                'commission' => $commission
-            ]);
-    
-            if ($transaction) {
-                Lead::where('id', $request->lead_id)->update(['status' => Lead::SUCCESS]);
-                
-                $dataEmail = [
-                    'customer_name' => $transaction->lead->customer_name,
-                    'email' => $this->hideEMail($transaction->lead->email),
-                    'no_telepon' => $this->hidePhoneNumber($transaction->lead->no_telepon),
-                    'transaction_date' => $this->convertDateView($transaction->transaction_date),
-                    'amount' => $this->currencyView($transaction->amount),
-                    'commission' => $this->currencyView($transaction->commission)
-                ];
 
-                $affiliateEmail = $transaction->lead->user->email;
-
-                Mail::send('admin.transaction._email', $dataEmail, function($message) use ($affiliateEmail) {
-                    $message->to($affiliateEmail)->subject('Affiliate Transaction Success');
-                });
-
-                return $this->sendResponse("Lead Processed Successfully");
-            } else {
-                return $this->sendResponse("Lead Processed Fail", "", 221);
-            }
+            
         }
     }
 
