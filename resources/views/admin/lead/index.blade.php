@@ -232,6 +232,8 @@
                         $('#commission').val(response.commission);
                     }
                 });
+            } else {
+                $('#commission').val(0);
             }
         });
 
@@ -249,6 +251,8 @@
                         $('#commission').val(response.commission);
                     }
                 });
+            } else {
+                $('#commission').val(0);
             }
         });
 

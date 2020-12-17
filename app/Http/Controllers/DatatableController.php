@@ -29,13 +29,11 @@ class DatatableController extends Controller
                         'users.id as user_id',
                         'users.username as username',
                         'saldo_awal',
-                        DB::raw('SUM(transactions.commission) as commission'),
                         DB::raw('count(leads.id) as signup')
                         // DB::raw('SUM(transactions.commission) - SUM(withdrawals.total) as balance'),
                     )
                     ->leftJoin('leads', 'users.id', '=', 'leads.user_id')
-                    ->leftJoin('transactions', 'transactions.lead_id', '=', 'leads.id')
-                    ->where('users.role', 'affiliator')
+                    ->where('users.role', 'affiliator')->whereNotNull('leads.email')
                     ->groupBy('leads.user_id')->orderBy('signup', 'DESC');
                     
             if ($request->filter_periode) {
@@ -80,7 +78,7 @@ class DatatableController extends Controller
                     $rows[$key] = [
                         'user_id' => $value->user_id,
                         'username' => $value->username,
-                        'commission' => $this->currencyView($value->commission),
+                        'commission' => $this->currencyView($commission[$value->user_id]['total_commission']),
                         'signup' => $value->signup,
                         'balance' => $this->currencyView($balance),
                         'click' => isset($click[$value->user_id]) ? $click[$value->user_id]['click'] : 0,
@@ -90,7 +88,7 @@ class DatatableController extends Controller
                     $temp = [
                         'user_id' => $value->user_id,
                         'username' => $value->username,
-                        'commission' => $this->currencyView($value->commission),
+                        'commission' => $this->currencyView($commission[$value->user_id]['total_commission']),
                         'signup' => $value->signup,
                         'balance' => $this->currencyView($balance),
                         'click' => isset($click[$value->user_id]) ? $click[$value->user_id]['click'] : 0,
@@ -144,6 +142,7 @@ class DatatableController extends Controller
                                 DB::raw('count(leads.id) as signup')
                             )
                             ->leftJoin('transactions', 'transactions.lead_id', '=', 'leads.id')
+                            ->whereNotNull('leads.email')
                             ->groupBy('user_id')->get()->keyBy('user_id')->toArray();
             
             $withdrawals = Withdrawal::select(
@@ -215,6 +214,7 @@ class DatatableController extends Controller
                 DB::raw('SUM(transactions.commission) as commission'),
                 DB::raw('count(leads.id) as signup')
             )->leftJoin('transactions', 'transactions.lead_id', '=', 'leads.id')
+            ->whereNotNull('leads.email')
             ->groupBy('user_id', 'vendor_id')->get();
 
             foreach ($dataLead as $key => $lead) {
@@ -412,7 +412,7 @@ class DatatableController extends Controller
 
     public function leadAdmin(Request $request) {
         if (request()->ajax()) {
-            $lead = Lead::latest('id');
+            $lead = Lead::whereNotNull('email')->latest('id');
             if ($request->status !== 'all') {
                 if ($request->status == Lead::ON_PROCESS) {
                     $lead->where('status', Lead::ON_PROCESS);

@@ -25,6 +25,11 @@ class AjaxController extends Controller
                 $commission = $service->commission_value;
             } else {
                 $commission = ($request->amount * $service->commission_value) / 100;
+                if (!is_null($service->max_commission)) {
+                    if ($commission > $service->max_commission) {
+                        $commission = $service->max_commission;
+                    }
+                }
             }
 
             return response()->json(['commission' => $commission]);

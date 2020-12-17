@@ -37,7 +37,7 @@ class HomeController extends Controller
         $affiliate = User::where('role', 'affiliator')->count();
 
         $commission = Transaction::all()->sum('commission');
-        $lead = Lead::all()->count();
+        $lead = Lead::whereNotNull('email')->get()->count();
         $click = Click::all()->sum('click');
         $conversion = $click > 0 ? round($lead / $click * 100, 2) : 0;
 
