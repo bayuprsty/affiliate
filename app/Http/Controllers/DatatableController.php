@@ -78,7 +78,7 @@ class DatatableController extends Controller
                     $rows[$key] = [
                         'user_id' => $value->user_id,
                         'username' => $value->username,
-                        'commission' => $this->currencyView($commission[$value->user_id]['total_commission']),
+                        'commission' => isset($commission[$value->user_id]['total_commission']) ? $this->currencyView($commission[$value->user_id]['total_commission']) : 0,
                         'signup' => $value->signup,
                         'balance' => $this->currencyView($balance),
                         'click' => isset($click[$value->user_id]) ? $click[$value->user_id]['click'] : 0,
