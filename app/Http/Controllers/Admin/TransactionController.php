@@ -73,7 +73,7 @@ class TransactionController extends Controller
                             $getCommission = Transaction::getCommissionValue($request->service_commission_id, $request->amount);
                             $commission = $getCommission > $service->max_commission ? $service->max_commission : $getCommission;
                         } else {
-                            if ($request->commission > $service->max_commission) {
+                            if (($service->max_commission != NULL || $service->max_commission > 0) && $request->commission > $service->max_commission) {
                                 DB::rollback();
                                 return $this->sendResponse("Maximal Commission : ".$this->currencyView($service->max_commission), [], 401);
                             }

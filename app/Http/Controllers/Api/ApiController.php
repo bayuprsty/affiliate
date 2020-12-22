@@ -208,7 +208,7 @@ class ApiController extends Controller
             DB::beginTransaction();
 
             if (!empty($request->commission)) {
-                if ((int) $request->commission > $service->max_commission) {
+                if (($service->max_commission != NULL || $service->max_commission > 0) && (int) $request->commission > $service->max_commission) {
                     return ApiResponse::send("Maximal Commission : ". $this->currencyView($service->max_commission), [], 501);
                 }
 
