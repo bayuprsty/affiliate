@@ -82,7 +82,7 @@ class DatatableController extends Controller
                         'signup' => $value->signup,
                         'balance' => $this->currencyView($balance),
                         'click' => isset($click[$value->user_id]) ? $click[$value->user_id]['click'] : 0,
-                        'conversion' => $conversion
+                        'conversion' => $conversion,
                     ];
                 } else {
                     $temp = [
