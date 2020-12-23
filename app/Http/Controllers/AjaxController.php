@@ -21,7 +21,7 @@ class AjaxController extends Controller
         if(request()->ajax()) {
             $service = ServiceCommission::findOrfail($request->service_id);
             
-            if ($service->commission_type_id === 1) {
+            if ((string) $service->commission_type_id === "1") {
                 $commission = $service->commission_value;
             } else {
                 $commission = ($request->amount * $service->commission_value) / 100;
