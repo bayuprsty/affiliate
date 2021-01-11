@@ -146,7 +146,7 @@
                                 <span class="text-xs text-danger font-weight-bold">
                                     NB : Pastikan data yang diinputkan sudah benar semua.
                                     <br/>
-                                    Karena jika ingin melakukan perubahan data silahkan menghubungi ADMIN dengan cara kirim email ke affiliate.system.dvnt@gmail.com
+                                    Karena jika ingin melakukan perubahan data silahkan menghubungi ADMIN dengan cara kirim email ke affiliate@davinti.co.id
                                 </span>
                                 <hr>
                                 <div class="row">

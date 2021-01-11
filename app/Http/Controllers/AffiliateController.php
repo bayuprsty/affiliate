@@ -153,10 +153,10 @@ class AffiliateController extends Controller
                         'no_telepon' => $request->no_telepon,
                         'body' => $request->message
                     ];
+                    
             Mail::send('affiliate.contact-admin._email', $data, function ($message) use ($request) {
                 $message->from($request->email);
-                $message->to('bayuprsty30@gmail.com', 'Tes 123')
-                        ->subject($request->subject);
+                $message->to('affiliate@davinti.co.id')->subject($request->subject);
             });
             
             return $this->sendResponse("Email Sent Successfully. Thank you for contact us");
