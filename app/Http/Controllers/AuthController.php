@@ -71,7 +71,7 @@ class AuthController extends Controller
             'password' => 'required|confirmed',
             'email' => 'required|email|unique:users',
             'ktp' => 'required',
-            'foto_ktp' => 'sometimes|image|mimes:jpg,jpeg,png,svg|max:1024'
+            'foto_ktp' => 'sometimes|image|mimes:jpg,jpeg,png,svg|max:10240'
         ]);
 
         if ($validator->fails()) {

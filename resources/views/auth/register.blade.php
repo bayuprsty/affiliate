@@ -120,7 +120,8 @@
                                                 Upload Foto KTP <i class="text-xs text-danger">*</i>
                                             </label>
                                             <div class="col-sm-9">
-                                                <input type="file" name="foto_ktp" required>
+                                                <input type="file" name="foto_ktp" required><br/>
+                                                <span class="text-danger" style="font-size: 11px;"><i>Max Upload File Size : 10 MB</i></span>
                                             </div>
                                         </div>
                                         <div class="form-group row">
@@ -193,6 +194,10 @@
                     if (res.code == 200) {
                         $.notify(res.message, "success");
                         window.location.assign(res.data.link);
+                    } else {
+                        $.notify(res.message, "error");
+                        $(fieldset).attr('disabled', false);
+                        $('#loader').hide();
                     }
                 }
             })
