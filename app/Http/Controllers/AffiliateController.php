@@ -101,7 +101,7 @@ class AffiliateController extends Controller
             if ($request->amount > $balance) {
                 return $this->sendResponse('Withdraw amount too large from Balance', NULL, 222);
             } elseif ($request->amount < $minimum) {
-                return $this->sendResponse('Minimum Withdraw amount '.$this->currencyView($request->minimum), NULL, 223);
+                return $this->sendResponse('Minimum Withdraw amount '.$this->currencyView($minimum), NULL, 223);
             } else {
                 $data = [
                     'date' => Carbon::NOW(),
