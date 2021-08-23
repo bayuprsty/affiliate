@@ -10,14 +10,12 @@
                         <label class="col-sm-3 col-form-label">Balance</label>
                         <div class="col-sm-9">
                             <input type="text" id="commissionBalance" class="form-control" value="@currency($balance)" disabled>
-                            <input type="hidden" name="balance" value="{{ $balance }}">
                         </div>
                     </div>
                     <div class="form-group row">
                         <label class="col-sm-3 col-form-label">Withdraw Amount</label>
                         <div class="col-sm-9">
                             <input type="text" id="withdrawAmount" name="amount" class="form-control">
-                            <input type="hidden" name="minimum" value="{{ $minimumPayout[0]->minimum_payout }}">
                             <span>*minimal withdraw adalah @currency($minimumPayout[0]->minimum_payout)</span>
                         </div>
                     </div>

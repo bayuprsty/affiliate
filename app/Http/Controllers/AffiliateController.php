@@ -87,9 +87,20 @@ class AffiliateController extends Controller
                 'amount' => 'required|integer'
             ]);
 
-            if ($request->amount > $request->balance) {
+            $user = Auth::user();
+            $commission = Transaction::leftJoin('leads', 'leads.id', '=', 'transactions.lead_id')->where('leads.user_id', $user->id)->sum('transactions.commission');
+            $withdrawalApproved = Withdrawal::where('user_id', $user->id)
+                                ->where('withdrawal_status_id', WithdrawalStatus::APPROVE)
+                                ->leftJoin('withdrawal_payouts', 'withdrawal_payouts.withdrawal_id', '=', 'withdrawals.id')
+                                ->sum('withdrawal_payouts.payout');
+            
+            $balance = $user->saldo_awal + $commission - $withdrawalApproved;
+            $minimumPayout = Payout::all();
+            $minimum = $minimumPayout[0]->minimum_payout;
+
+            if ($request->amount > $balance) {
                 return $this->sendResponse('Withdraw amount too large from Balance', NULL, 222);
-            } elseif ($request->amount < $request->minimum) {
+            } elseif ($request->amount < $minimum) {
                 return $this->sendResponse('Minimum Withdraw amount '.$this->currencyView($request->minimum), NULL, 223);
             } else {
                 $data = [
